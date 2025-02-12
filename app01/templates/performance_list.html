@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px;">
+            <a class="btn btn-primary" href="/performance/add"> <!-- 跳转到新页面可用 target="_blank" -->
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                新建信息
+            </a>
+            <div style="margin-bottom: auto;width: 300px;">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="search_name" class="form-control" placeholder="成员姓名"
+                               value="{{ search_name }}">
+                        <input type="month" name="search_month" class="form-control" placeholder="月份"
+                               value="{{ search_month }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                    </span>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                {{ list_name }}
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>成员</th>
+                    <th>月份</th>
+                    <th>当月目标量</th>
+                    <th>当月完成量</th>
+                    <th>当月销售额</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.name }}</th>
+                        <td>{{ obj.month }}</td>
+                        <td>{{ obj.target }}</td>
+                        <td>{{ obj.target_achievement }}</td>
+                        <td>{{ obj.sales_revenue }}</td>
+                        <td>
+                            <a class="btn btn-xs btn-primary" href="/performance/{{ obj.id }}/edit">编辑</a>
+                            <a class="btn btn-xs btn-danger" href="/performance/{{ obj.id }}/delete">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

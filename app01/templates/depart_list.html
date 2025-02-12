@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                批量上传
+            </div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data" action="/depart/multi">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="file" name="upload_file">
+                    </div>
+                    <input type="submit" value="上传" class="btn btn-info btn-sm">
+                </form>
+            </div>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <a class="btn btn-primary" href="/depart/add"> <!-- 跳转到新页面可用 target="_blank" -->
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                新建部门
+            </a>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                部门列表
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in n0 %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <th>{{ obj.name }}</th>
+                        <td>
+                            <a class="btn btn-xs btn-primary" href="/depart/{{ obj.id }}/edit">编辑</a>
+                            <a class="btn btn-xs btn-danger" href="/depart/delete?nid={{ obj.id }}">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+
+

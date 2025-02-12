@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">新建任务表单</div>
+            <div class="panel-body">
+                <form id="formAdd"><!-- novalidate取消网页端验证，交给Django处理 -->
+                    <div class="clearfix">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="col-xs-6">
+                                <div class="form-group" style="position: relative;margin-bottom: 20px"><!-- 添加css相对定位 -->
+                                    <label>{{ field.label }}</label>
+                                    {{ field }}
+                                    <span style="color: red;position: absolute" class="error-msg">{{ field.errors.0 }}</span><!-- 添加css绝对定位 -->
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="col-xs-12">
+                            <button id="btnAdd" type="button" class="btn btn-primary">提 交</button>
+                            <a class="btn btn-default" href="/task/list">返 回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                任务列表
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>等级</th>
+                    <th>负责人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <td>{{ obj.tittle }}</td>
+                        <td>{{ obj.get_level_display }}</td>
+                        <td>{{ obj.user }}</td>
+                        <td>
+                            <a class="btn btn-xs btn-primary" href="#">编辑</a>
+                            <a class="btn btn-xs btn-danger" href="#">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <ul class="pagination">
+            {{ page_string }}
+        </ul>
+        <h1>ajax学习</h1>
+        <h3>示例1</h3>
+        <input id="btn1" type="button" class="btn btn-primary" value="点击"/>
+        <h3>示例2</h3>
+        <input type="text" id="txtUser" placeholder="姓名"/>
+        <input type="text" id="txtAge" placeholder="年龄"/>
+        <input id="btn2" type="button" class="btn btn-primary" value="点击"/>
+        <h3>示例3</h3>
+        <form id="form3">
+            <input type="text" name="user" placeholder="姓名"/>
+            <input type="text" name="age" placeholder="年龄"/>
+            <input type="text" name="email" placeholder="邮箱"/>
+        </form>
+        <input id="btn3" type="button" class="btn btn-primary" value="点击"/>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            // 页面框架加载完成后代码自动执行
+            bindBtn1Event();
+            bindBtn2Event();
+            bindBtn3Event();
+            bindBtnAddEvent();
+        })
+
+        function bindBtn1Event() {
+            $("#btn1").click(
+                // 在 btn1 标签上绑定一个点击事件
+                function () {
+                    $.ajax({
+                        url: "/task/ajax",
+                        type: "get",
+                        {# type: "post", post请求注意django有 csrf_token 验证，要么在脚本把 csrf_token 提交上，要么在服务器端取消验证 #}
+                        data: {
+                            n1: 123,
+                            n2: 123
+                        },
+                        dataType: "JSON",  // 把服务器返回的HttpResponse的JSON字符串识别为对象，方便调用，如果服务器用django的JsonResponse返回，就不需要声明dataType: "JSON"
+                        success: function (res) {
+                            // res: str  # 服务器返回的HttpResponse信息
+                            console.log(res)
+                            console.log(res.data)
+                            console.log(res.status)
+                        }
+                    })
+                }
+            )
+        }
+
+        function bindBtn2Event() {
+            $("#btn2").click(
+                // 在 btn1 标签上绑定一个点击事件
+                function () {
+                    $.ajax({
+                        url: "/task/ajax",
+                        type: "post",
+                        data: {
+                            name: $("#txtUser").val(),
+                            age: $("#txtAge").val(),
+                        },
+                        dataType: "JSON",  // 把服务器返回的HttpResponse的JSON字符串识别为对象，方便调用，如果服务器用django的JsonResponse返回，就不需要声明dataType: "JSON"
+                        success: function (res) {
+                            // res: str  # 服务器返回的HttpResponse信息
+                            console.log(res)
+                            console.log(res.data)
+                            console.log(res.status)
+                        }
+                    })
+                }
+            )
+        }
+
+        function bindBtn3Event() {
+            $("#btn3").click(
+                // 在 btn1 标签上绑定一个点击事件
+                function () {
+                    $.ajax({
+                        url: "/task/ajax",
+                        type: "post",
+                        data: $("#form3").serialize(),
+                        dataType: "JSON",  // 把服务器返回的HttpResponse的JSON字符串识别为对象，方便调用，如果服务器用django的JsonResponse返回，就不需要声明dataType: "JSON"
+                        success: function (res) {
+                            // res: str  # 服务器返回的HttpResponse信息
+                            console.log(res)
+                            console.log(res.data)
+                            console.log(res.status)
+                        }
+                    })
+                }
+            )
+        }
+
+        function bindBtnAddEvent() {
+            $("#btnAdd").click(function () {  // 在 btn1 标签上绑定一个点击事件
+                    $(".error-msg").empty();  // 每次点击时先清空错误信息
+                    $.ajax({
+                        url: "/task/add",
+                        type: "post",
+                        data: $("#formAdd").serialize(),
+                        dataType: "JSON",  // 把服务器返回的HttpResponse的JSON字符串识别为对象，方便调用，如果服务器用django的JsonResponse返回，就不需要声明dataType: "JSON"
+                        success: function (res) {
+                            if (res.status) {
+                                alert("添加成功");
+                                location.reload();// 用JS实现页面的刷新
+                            } else {
+                                $.each(  // 循环res.error字典
+                                    res.error, function (k, v) {
+                                        $("#id_" + k).next().text(v[0]);  // $("#id_" + k)是input框的id，该id是modelform自动写上去的。next()指的是input标签的下一个标签，即<span>
+                                    }
+                                )
+                            }
+                        }
+                    })
+                }
+            )
+        }
+    </script>
+{% endblock %}

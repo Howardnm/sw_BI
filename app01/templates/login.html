@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .login-container {
+            width: 350px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-container">
+        <h2 class="login-title">用户登录</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{{ form.username.label }}</label>
+                {{ form.username }}
+                <span style="color: red;">{{ form.username.errors.0 }}</span>
+            </div>
+            <div class="form-group">
+                <label>{{ form.password.label }}</label>
+                {{ form.password }}
+                <span style="color: red;">{{ form.password.errors.0 }}</span>
+            </div>
+            <div class="form-group">
+                <label>{{ form.code.label }}</label>
+                <div class="row">
+                    <div class="col-xs-6">
+                        {{ form.code }}
+                        <span style="color: red;">{{ form.code.errors.0 }}</span>
+                    </div>
+                    <div class="col-xs-4">
+                        <img id="image_code" src="/image/code" style="width: 125px;">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">登 录</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
