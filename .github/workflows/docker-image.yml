@@ -24,7 +24,7 @@ jobs:
 
       # Set up Docker Buildx (for multi-platform builds)
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
 
       # Cache Docker layers to speed up the build process
       - name: Cache Docker layers
