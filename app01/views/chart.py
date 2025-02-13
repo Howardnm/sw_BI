@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from app01 import models
 import time
+import pandas as pd
 
 
 def chart_list(request):
@@ -19,7 +20,6 @@ def chart_list(request):
 
 def chart_bar(request):
     """ 构造柱状图数据 """
-    import pandas as pd
     this_year = time.strftime("%Y")
     monthly_sales = []
     for i in range(12):
