@@ -21,8 +21,6 @@ jobs:
       # Checkout code from GitHub repository
       - name: Checkout code
         uses: actions/checkout@v4
-      #    - name: sw_bi
-      #      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
       # Set up Docker Buildx (for multi-platform builds)
       - name: Set up Docker Buildx
@@ -30,7 +28,7 @@ jobs:
 
       # Cache Docker layers to speed up the build process
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-docker-${{ github.sha }}
