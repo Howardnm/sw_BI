@@ -20,6 +20,6 @@ jobs:
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
     - name: Tag Docker image
-      run: docker tag sw_bi:latest ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
+      run: docker tag sw_bi:latest howardnm/sw_bi:latest
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
