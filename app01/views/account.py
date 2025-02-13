@@ -18,7 +18,7 @@ def login(request):
         request.session["info"] = {"id": form.instance.id, "name": form.instance.username}
         # 之后的html页面，可在html使用{{ request.session.info.name }}进行显示
         # 给session设置60s超时（这是给session整个对象进行设置超时，session里所有信息都会受到超时影响，超时后 session 内所有信息会清空）
-        request.session.set_expiry(60 * 60 * 24 * 30)  # 登录成功后，给session重新设置30天超时
+        request.session.set_expiry(60 * 60 * 24 * 1000)  # 登录成功后，给session重新设置30天超时
         return redirect("/admin/list")
     return render(request, "login.html", {"form": form})
 

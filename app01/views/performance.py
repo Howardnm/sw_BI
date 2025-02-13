@@ -10,16 +10,20 @@ def performance_list(request):
     data_dict = {}
     search_name = request.GET.get("search_name", "")  # 有值传值，没值传空
     search_month = request.GET.get("search_month", "")  # 有值传值，没值传空
+    search_team = request.GET.get("search_team", "")  # 有值传值，没值传空
     if search_name:
         data_dict["name__name__contains"] = search_name  # __contains：指mobile的值包含变量search_data的字符串，即可搜出
         # "name__name__contains",第一个name是本表字段名，第二个name是跨表的字段名
     if search_month:
         data_dict["month__contains"] = search_month + "-01"  # __contains：指mobile的值包含变量search_data的字符串，即可搜出
+    if search_team:
+        data_dict["name__team__name__contains"] = search_team  # __contains：指mobile的值包含变量search_data的字符串，即可搜出
 
     # select * from 表 order by level desc;【Django中：-id是desc, id是asc】
-    queryset = models.Performance.objects.filter(**data_dict).order_by("month")
+    queryset = models.Performance.objects.filter(**data_dict).order_by("-month")
     page_obj = Pagination(request, queryset, "page", 12)
     context = {
+        "search_team": search_team,  # 搜索框保留搜索值
         "search_name": search_name,  # 搜索框保留搜索值
         "search_month": search_month,  # 搜索框保留搜索值
         "queryset": page_obj.page_queryset,  # 分完页的数据

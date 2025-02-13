@@ -216,11 +216,29 @@ class SalesTeamModelForm(BootStrapModelForm):
         model = models.SalesTeam
         fields = "__all__"
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        if name:
+            exists: bool = models.SalesTeam.objects.exclude(id=self.instance.pk).filter(name=name).exists()
+            if exists:
+                self.add_error("name", "团队名称已存在！")
+        return cleaned_data
+
 
 class SalespersonModelForm(BootStrapModelForm):
     class Meta:
         model = models.Salesperson
         fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        if name:
+            exists: bool = models.Salesperson.objects.exclude(id=self.instance.pk).filter(name=name).exists()
+            if exists:
+                self.add_error("name", "该人员已存在！")
+        return cleaned_data
 
 
 class PerformanceModelForm(BootStrapModelForm):
@@ -241,7 +259,8 @@ class PerformanceModelForm(BootStrapModelForm):
         month = cleaned_data.get("month")
         print(month)
         if name and month:
-            exists: bool = models.Performance.objects.exclude(id=self.instance.pk).filter(name=name, month=month).exists()
+            exists: bool = models.Performance.objects.exclude(id=self.instance.pk).filter(name=name,
+                                                                                          month=month).exists()
             if exists:
                 self.add_error("month", "该月份数据已存在！")
         return cleaned_data

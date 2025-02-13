@@ -7,20 +7,29 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 新建信息
             </a>
-            <div style="margin-bottom: auto;width: 300px;">
+            <div style="margin-top: 10px;">
                 <form method="get">
-                    <div class="input-group">
-                        <input type="text" name="search_name" class="form-control" placeholder="成员姓名"
-                               value="{{ search_name }}">
-                        <input type="month" name="search_month" class="form-control" placeholder="月份"
-                               value="{{ search_month }}">
-                        <span class="input-group-btn">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" name="search_team" class="form-control" placeholder="团队"
+                                       value="{{ search_team }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="search_name" class="form-control" placeholder="成员姓名"
+                                       value="{{ search_name }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="month" name="search_month" class="form-control" placeholder="月份"
+                                       value="{{ search_month }}">
+                            </div>
+                            <div class="col-md-2">
                             <button class="btn btn-default" type="submit">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
-                    </span>
+                            </div>
+                        </div>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -32,6 +41,8 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
+                    <th>团队</th>
+                    <th>级别</th>
                     <th>成员</th>
                     <th>月份</th>
                     <th>当月目标量</th>
@@ -43,6 +54,8 @@
                 <tbody>
                 {% for obj in queryset %}
                     <tr>
+                        <th>{{ obj.name.team }}</th>
+                        <th>{{ obj.name.get_status_display }}</th>
                         <th>{{ obj.name }}</th>
                         <td>{{ obj.month }}</td>
                         <td>{{ obj.target }}</td>

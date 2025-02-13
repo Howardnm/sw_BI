@@ -2,33 +2,131 @@
 {% load static %}
 
 {% block content %}
-    <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-heading">折线图</div>
-            <div class="panel-body">...</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">【营销中心团队】{{ this_year }}年累计销售额完成率及排名</div>
+                    <table class="panel-body table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>业务团队</th>
+                            <th>销售经理</th>
+                            <th>1-{{ this_month }}月指标完成率</th>
+                            <th>1-{{ this_month }}月销售额排名</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in queryset %}
+                            <tr>
+                                <th>{{ obj.name.team }}</th>
+                                <td>{{ obj.name }}</td>
+                                <td>{{ obj.get_status_display }}</td>
+                                <td>{{ obj.team }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">【营销中心团队】{{ this_year }}年累计销售额完成率及排名</div>
+                    <table class="panel-body table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>业务团队</th>
+                            <th>销售经理</th>
+                            <th>{{ this_month }}月指标完成率</th>
+                            <th>{{ this_month }}月销售额排名</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in queryset %}
+                            <tr>
+                                <th>{{ obj.name.team }}</th>
+                                <td>{{ obj.name }}</td>
+                                <td>{{ obj.get_status_display }}</td>
+                                <td>{{ obj.team }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">【营销中心业务】{{ this_year }}年累计销售额完成率及排名</div>
+                    <table class="panel-body table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>业务</th>
+                            <th>1-{{ this_month }}月指标完成率</th>
+                            <th>1-{{ this_month }}月销售额排名</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in queryset %}
+                            <tr>
+                                <td>{{ obj.name }}</td>
+                                <td>{{ obj.get_status_display }}</td>
+                                <td>{{ obj.team }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">【营销中心业务】{{ this_year }}年累计销售额完成率及排名</div>
+                    <table class="panel-body table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>业务</th>
+                            <th>{{ this_month }}月指标完成率</th>
+                            <th>{{ this_month }}月销售额排名</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in queryset %}
+                            <tr>
+                                <td>{{ obj.name }}</td>
+                                <td>{{ obj.get_status_display }}</td>
+                                <td>{{ obj.team }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">柱状图</div>
                     <div class="panel-body">
-                        <div id="m2" style="width: 100%;height:400px"></div>
+                        <div id="m2" style="width: 100%;height:300px"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">饼图</div>
-                    <div class="panel-body">...</div>
+                    <div class="panel-body">
+                        <div id="container" style="width: 100%; height: 300px; margin: 0 auto"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
 
 {% block js %}
     <script src="{% static "/js/echarts.min.js" %}"></script>
+    <script src="{% static "/js/highcharts.js" %}"></script>
     <script type="text/javascript">
         $(function () {
             initBar();
@@ -43,7 +141,7 @@
             // 指定图表的配置项和数据
             var option = {
                 title: {
-                    text: 'ECharts 入门示例',
+                    text: '{{ this_year }}年每月销量',
                     left: "center"
                 },
                 tooltip: {},
@@ -75,6 +173,74 @@
                 }
             });
         }
+
+        (async () => {
+            const data = await fetch(
+                "https://www.highcharts.com/samples/data/usdeur.json",
+            ).then((response) => response.json())
+
+            Highcharts.chart("container", {
+                chart: {
+                    zooming: {
+                        type: "x",
+                    },
+                },
+                title: {
+                    text: "USD to EUR exchange rate over time",
+                },
+                subtitle: {
+                    text:
+                        document.ontouchstart === undefined
+                            ? "Click and drag in the plot area to zoom in"
+                            : "Pinch the chart to zoom in",
+                },
+                xAxis: {
+                    type: "datetime",
+                },
+                yAxis: {
+                    title: {
+                        text: "Exchange rate",
+                    },
+                },
+                legend: {
+                    enabled: false,
+                },
+                plotOptions: {
+                    area: {
+                        marker: {
+                            radius: 2,
+                        },
+                        lineWidth: 1,
+                        color: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1,
+                            },
+                            stops: [
+                                [0, "rgb(199, 113, 243)"],
+                                [0.7, "rgb(76, 175, 254)"],
+                            ],
+                        },
+                        states: {
+                            hover: {
+                                lineWidth: 1,
+                            },
+                        },
+                        threshold: null,
+                    },
+                },
+
+                series: [
+                    {
+                        type: "area",
+                        name: "USD to EUR",
+                        data: data,
+                    },
+                ],
+            })
+        })()
 
 
     </script>
