@@ -12,5 +12,5 @@ docker run -d \
 -e DJANGO_ALLOWED_HOSTS="bueess.top" \
 -e DEBUG="True" \
 -e DJANGO_LOGLEVEL="info" \
-sw_bi:latest
+howardnm/sw_bi:latest
 ```
