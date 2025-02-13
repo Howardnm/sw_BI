@@ -16,3 +16,10 @@ jobs:
     - uses: actions/checkout@v4
     - name: sw_bi
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Tag Docker image
+      run: docker tag sw_bi:latest ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
+    - name: Push Docker image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
