@@ -12,40 +12,66 @@ jobs:
 
     runs-on: ubuntu-22.04
 
+    env:
+      IMAGE_NAME: "sw_bi"  # Docker 镜像名称
+#      REGISTRY: "docker.io"  # 目标 Docker Hub（默认）
+      DEFAULT_VERSION: "latest"  # 默认版本号
+
     steps:
-    # Checkout code from GitHub repository
-    - name: Checkout code
-      uses: actions/checkout@v4
-#    - name: sw_bi
-#      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      # Checkout code from GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+      #    - name: sw_bi
+      #      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
-    # Set up Docker Buildx (for multi-platform builds)
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      # Set up Docker Buildx (for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    # Cache Docker layers to speed up the build process
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-docker-
+      # Cache Docker layers to speed up the build process
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
 
-    # Login to Docker Hub or GitHub Container Registry (GHCR)
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}  # Your Docker Hub username
-        password: ${{ secrets.DOCKER_PASSWORD }}  # Your Docker Hub token
+      # 计算 Docker 镜像的版本号
+      - name: Define Docker Image Version
+        run: |
+          # 获取 Git 短 SHA（唯一版本）
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          
+          # 获取 Git Tag（如果存在）
+          TAG_VERSION=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          
+          # 最终版本号
+          if [ -n "$TAG_VERSION" ]; then
+            IMAGE_VERSION="$TAG_VERSION"
+          else
+            IMAGE_VERSION="$SHORT_SHA"
+          fi
+          
+          echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
+          echo "最终 Docker 镜像版本: $IMAGE_VERSION"
 
-    # Build Docker image
-    - name: Build Docker image
-      run: |
-        docker build -t sw_bi:latest .
+      # Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Your Docker Hub username
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Your Docker Hub token
 
-    # Push Docker image to Docker Hub (or GHCR)
-    - name: Push Docker image to Docker Hub
-      run: |
-        docker tag sw_bi:latest ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/sw_bi:latest
+
+      # Build Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_VERSION .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_VERSION ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:${{ env.DEFAULT_VERSION }}
+
+      # Push Docker image to Docker Hub (or GHCR)
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_VERSION
+          docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:${{ env.DEFAULT_VERSION }}
