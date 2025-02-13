@@ -17,8 +17,22 @@ RUN pip install --upgrade pip
 # Copy the requirements file first (better caching)
 COPY requirements.txt /app/
 
+
+# 安装 Nginx 和 Python 依赖
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade pip
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制 Nginx 配置
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# 预创建静态文件目录（避免 collectstatic 报错）
+RUN mkdir -p "/app/static"
+# 收集静态文件
+RUN python manage.py collectstatic --noinput
 
 # Stage 2: Production stage
 FROM python:3.8-slim
@@ -49,6 +63,13 @@ EXPOSE 8000
 
 # Start the application using Gunicorn
 # 生产环境(gunicorn支持多线程)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
 # 开发环境(只支持单线程，容易崩溃)
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# 启动 Nginx 和 Django
+
+# 运行 supervisord 以管理进程
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# 启动 Supervisor 以管理 Nginx 和 Gunicorn
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
