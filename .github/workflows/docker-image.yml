@@ -10,9 +10,9 @@ jobs:
 
   build:
 
-    runs-on: python:3.13-slim
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
+    - name: sw_bi
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
