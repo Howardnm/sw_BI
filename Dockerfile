@@ -1,5 +1,5 @@
 # Stage 1: Base build stage
-FROM python:3.13-slim AS builder
+FROM python:3.8-slim AS builder
 
 # Create the app directory
 RUN mkdir /app
@@ -11,18 +11,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# 安装 pandas 依赖的最小系统库
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
-
-# 先安装 numpy，避免 pandas 重新编译
-RUN pip install --no-cache-dir numpy
 
 # Copy the requirements file first (better caching)
 COPY requirements.txt /app/
@@ -31,7 +21,7 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Production stage
-FROM python:3.13-slim
+FROM python:3.8-slim
 
 RUN useradd -m -r appuser && \
    mkdir /app && \
