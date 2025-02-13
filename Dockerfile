@@ -19,7 +19,7 @@ COPY requirements.txt /app/
 
 # 安装 Nginx 和 Python 依赖
 RUN apt-get update && \
-    apt-get install -y nginx supervisor && \
+    apt-get install -y nginx && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 # Install Python dependencies
@@ -27,14 +27,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/nginx.conf
-
-# 确保 Supervisor 目录存在
-RUN mkdir -p /etc/supervisor
-# 运行 supervisord 以管理进程.
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-
-# 确保 supervisord.conf 可读
-RUN chmod 644 /etc/supervisor/supervisord.conf
 
 # Stage 2: Production stage
 FROM python:3.8-slim
@@ -65,11 +57,12 @@ EXPOSE 8000
 
 # Start the application using Gunicorn
 # 生产环境(gunicorn支持多线程)
-#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
 # 开发环境(只支持单线程，容易崩溃)
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-# 启动 Nginx 和 Django
 
-# 启动 Supervisor 以管理 Nginx 和 Gunicorn
-#CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# 启动 Nginx 和 Django
+# 让 Nginx 以前台模式运行，防止容器退出
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+# 启动 Nginx 并运行 Gunicorn
+CMD ["sh", "-c", "nginx && exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
