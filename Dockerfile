@@ -11,8 +11,18 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# 安装 pandas 依赖的最小系统库
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
+
+# 先安装 numpy，避免 pandas 重新编译
+RUN pip install --no-cache-dir numpy
 
 # Copy the requirements file first (better caching)
 COPY requirements.txt /app/
