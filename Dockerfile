@@ -19,7 +19,7 @@ COPY requirements.txt /app/
 
 # 安装 Nginx 和 Python 依赖
 RUN apt-get update && \
-    apt-get install -y nginx && \
+    apt-get install -y nginx supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 # Install Python dependencies
