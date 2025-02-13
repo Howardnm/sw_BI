@@ -30,7 +30,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # 确保 Supervisor 目录存在
 RUN mkdir -p /etc/supervisor
-# 运行 supervisord 以管理进程
+# 运行 supervisord 以管理进程.
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 # 确保 supervisord.conf 可读
