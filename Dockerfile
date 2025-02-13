@@ -62,7 +62,5 @@ EXPOSE 8000
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # 启动 Nginx 和 Django
-# 让 Nginx 以前台模式运行，防止容器退出
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # 启动 Nginx 并运行 Gunicorn
-CMD ["sh", "-c", "nginx && exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
+CMD ["sh", "-c", "nginx & gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
