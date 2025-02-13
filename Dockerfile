@@ -48,5 +48,7 @@ USER appuser
 EXPOSE 8000
 
 # Start the application using Gunicorn
+# 生产环境(gunicorn支持多线程)
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
+# 开发环境(只支持单线程，容易崩溃)
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
