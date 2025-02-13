@@ -28,6 +28,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# 运行 supervisord 以管理进程
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# 确保 supervisord 可执行
+RUN chmod +x /usr/bin/supervisord
+
 # Stage 2: Production stage
 FROM python:3.8-slim
 
@@ -61,9 +67,6 @@ EXPOSE 8000
 # 开发环境(只支持单线程，容易崩溃)
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 # 启动 Nginx 和 Django
-
-# 运行 supervisord 以管理进程
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # 启动 Supervisor 以管理 Nginx 和 Gunicorn
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
