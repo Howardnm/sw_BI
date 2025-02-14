@@ -63,4 +63,8 @@ EXPOSE 8000
 
 # 启动 Nginx 和 Django
 # 启动 Nginx 并运行 Gunicorn
-CMD ["sh", "-c", "nginx & gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
+#CMD ["sh", "-c", "nginx & gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
+#CMD ["nginx", "-g", "daemon off;"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
+# 启动 Nginx 和 Gunicorn
+CMD ["sh", "-c", "nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
