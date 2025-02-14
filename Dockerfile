@@ -46,7 +46,6 @@ WORKDIR /app
 
 # Copy application code
 COPY . .
-COPY /app/app01/static /var/www/html/static
 
 # 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
