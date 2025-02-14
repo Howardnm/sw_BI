@@ -61,7 +61,6 @@ ENV PYTHONUNBUFFERED=1
 #USER appuser
 
 # Expose the application port
-EXPOSE 80
 EXPOSE 8000
 
 # Start the application using Gunicorn

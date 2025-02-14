@@ -124,4 +124,4 @@ STATIC_URL = 'app01/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['bueess.top']
+CSRF_TRUSTED_ORIGINS = ["http://bueess.top"]
