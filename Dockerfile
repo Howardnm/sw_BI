@@ -38,7 +38,7 @@ RUN useradd -m -r appuser && \
 
 # 手动创建 Nginx 需要的目录并赋予权限
 RUN mkdir -p /var/lib/nginx/body && \
-    chown -R appuser:appuser /var/lib/nginx /var/lib/nginx/body \
+    chown -R appuser:appuser /var/lib/nginx /var/lib/nginx/body
 
 # Copy the Python dependencies from the builder stage
 COPY --from=builder /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
