@@ -20,9 +20,6 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 复制 Nginx 配置
-COPY nginx.conf /etc/nginx/nginx.conf
-
 # Stage 2: Production stage
 FROM python:3.8-slim
 
@@ -49,6 +46,13 @@ WORKDIR /app
 
 # Copy application code
 COPY . .
+COPY /app/app01/static /var/www/html/static
+
+# 复制 Nginx 配置
+COPY nginx.conf /etc/nginx/conf.d/nginx.conf
+
+#RUN chown -R www-data:www-data /app/app01/static/ && \
+#    chmod -R 755 /app/app01/static/
 
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -58,6 +62,7 @@ ENV PYTHONUNBUFFERED=1
 #USER appuser
 
 # Expose the application port
+EXPOSE 80
 EXPOSE 8000
 
 # Start the application using Gunicorn
