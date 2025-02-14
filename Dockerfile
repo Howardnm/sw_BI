@@ -63,4 +63,5 @@ EXPOSE 8000
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # 启动 Nginx 和 Gunicorn
-CMD ["sh", "-c", "exec nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
+#CMD ["sh", "-c", "exec nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
+CMD ["sh", "-c", "exec nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile - sw_BI.wsgi:application"]
