@@ -18,15 +18,15 @@ RUN pip install --upgrade pip
 COPY requirements.txt /app/
 
 # 安装 Nginx 和 Python 依赖
-RUN apt-get update && \
-    apt-get install -y nginx && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip install --upgrade pip
+RUN apt-get update
+RUN apt-get install -y nginx
+RUN rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制 Nginx 配置
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # Stage 2: Production stage
 FROM python:3.8-slim
