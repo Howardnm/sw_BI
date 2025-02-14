@@ -28,7 +28,7 @@ FROM python:3.8-slim
 
 # 安装 Nginx 和 Python 依赖
 RUN apt-get update && \
-    apt-get install -y nginx && \
+    apt-get install -y nginx vim && \
     rm -rf /var/lib/apt/lists/*
 
 # 创建非 root 用户
