@@ -32,13 +32,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 创建非 root 用户
-RUN useradd -m -r appuser && \
-   mkdir /app && \
-   chown -R appuser /app
+#RUN #useradd -m -r appuser && \
+#   mkdir /app && \
+#   chown -R appuser /app
 
 # 手动创建 Nginx 需要的目录并赋予权限
-RUN mkdir -p /var/lib/nginx/body && \
-    chown -R appuser:appuser /var/lib/nginx /var/lib/nginx/body
+#RUN #mkdir -p /var/lib/nginx/body && \
+#    chown -R appuser:appuser /var/lib/nginx /var/lib/nginx/body
 
 # Copy the Python dependencies from the builder stage
 COPY --from=builder /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
@@ -48,14 +48,14 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 WORKDIR /app
 
 # Copy application code
-COPY --chown=appuser:appuser . .
+#COPY --chown=appuser:appuser . .
 
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Switch to non-root user
-USER appuser
+#USER appuser
 
 # Expose the application port
 EXPOSE 8000
