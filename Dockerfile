@@ -33,10 +33,6 @@ RUN apt-get update && \
 #   mkdir /app && \
 #   chown -R appuser /app
 
-# 手动创建 Nginx 需要的目录并赋予权限
-#RUN mkdir -p /var/lib/nginx/body && \
-#    chown -R appuser:appuser /var
-
 # Copy the Python dependencies from the builder stage
 COPY --from=builder /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
@@ -49,9 +45,6 @@ COPY . .
 
 # 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
-
-#RUN chown -R www-data:www-data /app/app01/static/ && \
-#    chmod -R 755 /app/app01/static/
 
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -69,12 +62,5 @@ EXPOSE 8000
 # 开发环境(只支持单线程，容易崩溃)
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# 启动 Nginx 和 Django
-# 启动 Nginx 并运行 Gunicorn
-#CMD ["sh", "-c", "nginx & gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
-#CMD ["nginx", "-g", "daemon off;"]
-#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "sw_BI.wsgi:application"]
-# 启动 Nginx 和 Gunicorn
-#CMD ["sh", "-c", "nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]
 # 启动 Nginx 和 Gunicorn
 CMD ["sh", "-c", "exec nginx -g 'daemon off;' & exec gunicorn --bind 0.0.0.0:8000 --workers 3 sw_BI.wsgi:application"]

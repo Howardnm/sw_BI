@@ -10,7 +10,8 @@ docker run -d \
 --net=bridge \
 -p 13003:80 \
 -e DJANGO_ALLOWED_HOSTS="bueess.top" \
--e DEBUG="True" \
+-e DJANGO_CSRF_TRUSTED_ORIGINS="http://bueess.top:13003" \
+-e DEBUG=False \
 -e DJANGO_LOGLEVEL="info" \
 howardnm/sw_bi:latest
 ```
