@@ -29,17 +29,12 @@ def chart_bar(request):
         monthly_sales.append(str(df.get('sales_revenue', pd.Series([0] * len(df))).fillna(0).sum()))
         # 如果 target 存在 → 直接 .fillna(0).sum()
         # 如果 target 不存在 → df.get('target') 返回 全 0 的 Series，避免 NoneType 错误。
-    print(monthly_sales)
+    # print(monthly_sales)
     data_dict = {
-        "legend": ['销量', '业绩'],
+        "legend": ['销量', '业绩', '销售额', '销售额1'],
         "x_axis": ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-        "series": [
-            {
-                "name": '销量',
-                "type": 'bar',
-                "data": monthly_sales,
-            },
-        ],
+        "data1": monthly_sales,
+        "data2": [500, 400, 800, 1000, ],
     }
 
     return JsonResponse({"status": True, "data": data_dict})

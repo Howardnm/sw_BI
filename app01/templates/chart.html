@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-            <div class="row">
+        <div class="row">
             <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">【营销中心业务】{{ this_year }}年累计销售额完成率及排名</div>
@@ -128,9 +128,16 @@
     <script src="{% static "/js/echarts.min.js" %}"></script>
     <script src="{% static "/js/highcharts.js" %}"></script>
     <script type="text/javascript">
+        // 每 5 秒自动刷新一次函数
+        setInterval(initBar, 5000);
+        setInterval(flash, 20000);
         $(function () {
             initBar();
         })
+
+        function flash() {
+            location.reload();
+        }
 
         /**
          * 初始化柱状图
@@ -152,8 +159,74 @@
                 xAxis: {
                     data: []  // 后台获取
                 },
-                yAxis: {},
-                series: []  // 后台获取
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '销量',
+                        min: 0,
+                        max: 2500,
+                        interval: 500,
+                        axisLabel: {
+                            formatter: '{value} 吨'
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '销售额',
+                        min: 0,
+                        max: 1500,
+                        axisLabel: {
+                            formatter: '{value} 万元'
+                        }
+                    },
+                ],
+                series: [
+                    {
+                        name: '销量',
+                        type: 'bar',
+                        tooltip: {
+                            valueFormatter: function (value) {
+                                return value + ' 吨';
+                            }
+                        },
+                        data: []
+                    },
+                    {
+                        name: '业绩',
+                        type: 'bar',
+                        barWidth: 10,
+                        tooltip: {
+                            valueFormatter: function (value) {
+                                return value + ' ml';
+                            }
+                        },
+                        data: []
+                    },
+                    {
+                        name: '销售额',
+                        type: 'line',
+                        smooth: true,
+                        z: -1,
+                        areaStyle: {opacity: 0.5},  // 透明度（0 完全透明，1 不透明）
+                        tooltip: {
+                            valueFormatter: function (value) {
+                                return value + ' 万元';
+                            },
+                        },
+                        data: [1500, 1400, 800, 400,]
+                    },
+                    {
+                        name: '销售额1',
+                        type: 'line',
+                        smooth: true,
+                        tooltip: {
+                            valueFormatter: function (value) {
+                                return value + ' 万元';
+                            },
+                        },
+                        data: [800, 1400, 300, 1300,]
+                    },
+                ]  // 后台获取
             };
 
             $.ajax({
@@ -165,7 +238,8 @@
                     if (res.status) {
                         option.legend.data = res.data.legend
                         option.xAxis.data = res.data.x_axis
-                        option.series = res.data.series
+                        option.series[0].data = res.data.data1
+                        option.series[1].data = res.data.data2
 
                         // 使用刚指定的配置项和数据显示图表。
                         myChart.setOption(option);
