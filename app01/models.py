@@ -128,3 +128,32 @@ class Performance(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SalesData(models.Model):
+    """ 销售数据 """
+    date = models.DateField(verbose_name="日期")
+    order_number = models.CharField(verbose_name="单据编号", max_length=64)
+    client_company = models.CharField(verbose_name="购货单位", max_length=64)
+    k3 = models.CharField(verbose_name="产品长代码", max_length=64)
+    product_name = models.CharField(verbose_name="产品名称", max_length=64)
+    product_specification = models.CharField(verbose_name="规格型号", max_length=64)
+    unit = models.CharField(verbose_name="单位", max_length=64)
+    sales_volume = models.CharField(verbose_name="实发数量", max_length=64)
+    department = models.CharField(verbose_name="部门", max_length=64)
+    salesperson = models.CharField(verbose_name="部门", max_length=64)
+    gross_unit_price = models.CharField(verbose_name="销售单价(元/Kg）", max_length=64)
+    # 销售金额（元）= 实发数量 * 销售单价(元/Kg）
+    net_unit_price = models.CharField(verbose_name="不含税单价（元/Kg）", max_length=64)  # 验证：销售单价(元/Kg）/ 1.13
+    # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
+    actual_client_company = models.CharField(verbose_name="实际购货单位", max_length=64)
+    supply_company = models.CharField(verbose_name="供货基地", max_length=64)
+    intra_group_or_external_sales = models.CharField(verbose_name="内外销（内销、外销）", max_length=64)
+    product_domain_groups = models.CharField(verbose_name="组别（电子电气、家电、汽配、卫浴、内销、贸易）", max_length=64)
+    business_trade_categories = models.CharField(verbose_name="贸易类型组别", max_length=64)
+    new_and_returning_customers = models.CharField(verbose_name="新老客户", max_length=64)
+    product_category = models.CharField(verbose_name="产品线", max_length=64)
+    core_product = models.CharField(verbose_name="主打产品", max_length=64)
+    order_type = models.CharField(verbose_name="订单类别", max_length=64)
+
+

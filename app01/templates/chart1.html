@@ -90,8 +90,11 @@
 
     <!-- 销售占比 -->
     <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-md-3">
             <div id="sales-pie-chart" style="height: 350px;"></div>
+        </div>
+        <div class="col-md-3">
+            <div id="sales-pie-chart1" style="height: 350px;"></div>
         </div>
         <div class="col-md-6">
             <div id="product-sales" style="height: 350px;"></div>
@@ -154,6 +157,21 @@
         });
 
         Highcharts.chart('sales-pie-chart', {
+            chart: {type: 'pie'},
+            title: {text: '销售占比'},
+            series: [{
+                name: '销售额',
+                data: [
+                    {name: '电子产品', y: 45},
+                    {name: '家电', y: 30},
+                    {name: '家具', y: 15},
+                    {name: '其他', y: 10}
+                ],
+                dataLabels: {enabled: true, format: '{point.name}: {point.y}%'}
+            }]
+        });
+
+        Highcharts.chart('sales-pie-chart1', {
             chart: {type: 'pie'},
             title: {text: '销售占比'},
             series: [{
@@ -234,7 +252,7 @@
                     data: [150, 73, 20, 50, 73, 20, 50],
                     pointPadding: 0.3,
                     pointPlacement: -0.2,
-                    dataLabels: {allowOverlap: true,enabled: true}
+                    dataLabels: {allowOverlap: true, enabled: true}
                 },
                 {
                     name: 'Employees Optimized',
@@ -242,7 +260,7 @@
                     data: [140, 90, 40],
                     pointPadding: 0.4,
                     pointPlacement: -0.2,
-                    dataLabels: {allowOverlap: true,enabled: true}
+                    dataLabels: {allowOverlap: true, enabled: true}
                 },
                 {
                     name: 'Profit',
