@@ -134,19 +134,18 @@ class SalesData(models.Model):
     """ 销售数据 """
     date = models.DateField(verbose_name="日期")
     order_number = models.CharField(verbose_name="单据编号", max_length=64)
-    client_company = models.CharField(verbose_name="购货单位", max_length=64)
+    client_company = models.CharField(verbose_name="购货公司", max_length=64)
     k3 = models.CharField(verbose_name="产品长代码", max_length=64)
     product_name = models.CharField(verbose_name="产品名称", max_length=64)
     product_specification = models.CharField(verbose_name="规格型号", max_length=64)
-    unit = models.CharField(verbose_name="单位", max_length=64)
-    sales_volume = models.CharField(verbose_name="实发数量", max_length=64)
+    sales_volume = models.IntegerField(verbose_name="实发数量(Kg)")
     department = models.CharField(verbose_name="部门", max_length=64)
-    salesperson = models.CharField(verbose_name="部门", max_length=64)
-    gross_unit_price = models.CharField(verbose_name="销售单价(元/Kg）", max_length=64)
+    salesperson = models.CharField(verbose_name="业务员", max_length=64)
+    gross_unit_price = models.DecimalField(verbose_name="销售单价(元/Kg）", max_digits=16, decimal_places=3, default=0)  # 整数位8(16-3)，小数位3
     # 销售金额（元）= 实发数量 * 销售单价(元/Kg）
-    net_unit_price = models.CharField(verbose_name="不含税单价（元/Kg）", max_length=64)  # 验证：销售单价(元/Kg）/ 1.13
+    net_unit_price = models.DecimalField(verbose_name="不含税单价（元/Kg）", max_digits=16, decimal_places=3, default=0)  # 验证：销售单价(元/Kg）/ 1.13
     # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
-    actual_client_company = models.CharField(verbose_name="实际购货单位", max_length=64)
+    actual_client_company = models.CharField(verbose_name="实际购货公司", max_length=64)
     supply_company = models.CharField(verbose_name="供货基地", max_length=64)
     intra_group_or_external_sales = models.CharField(verbose_name="内外销（内销、外销）", max_length=64)
     product_domain_groups = models.CharField(verbose_name="组别（电子电气、家电、汽配、卫浴、内销、贸易）", max_length=64)
@@ -155,5 +154,3 @@ class SalesData(models.Model):
     product_category = models.CharField(verbose_name="产品线", max_length=64)
     core_product = models.CharField(verbose_name="主打产品", max_length=64)
     order_type = models.CharField(verbose_name="订单类别", max_length=64)
-
-

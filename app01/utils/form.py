@@ -259,8 +259,7 @@ class PerformanceModelForm(BootStrapModelForm):
         month = cleaned_data.get("month")
         print(month)
         if name and month:
-            exists: bool = models.Performance.objects.exclude(id=self.instance.pk).filter(name=name,
-                                                                                          month=month).exists()
+            exists: bool = models.Performance.objects.exclude(id=self.instance.pk).filter(name=name, month=month).exists()
             if exists:
                 self.add_error("month", "该月份数据已存在！")
         return cleaned_data
