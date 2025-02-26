@@ -11,16 +11,16 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Upgrade pip and install dependencies
-RUN pip install --upgrade pip
-
-RUN apt-get update && apt-get install -y \
+# 安装c++，以便于Python的mysqlclient的安装
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     build-essential \
     pkg-config \
     default-libmysqlclient-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
 
 # Copy the requirements file first (better caching)
 COPY requirements.txt /app/
@@ -33,9 +33,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.8-slim
 
 # 安装 Nginx 和 Python 依赖
-RUN apt-get update && \
-    apt-get install -y nginx vim && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libmysqlclient-dev \
+    nginx \
+    vim \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /usr/share/man/* /usr/share/locale/*
 
 # 创建非 root 用户
 #RUN useradd -m -r appuser && \
