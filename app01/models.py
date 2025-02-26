@@ -96,6 +96,8 @@ class Order(models.Model):
 class SalesTeam(models.Model):
     """ 销售团队 """
     name = models.CharField(verbose_name="销售团队名称", max_length=64)
+    business_area = models.CharField(verbose_name="业务区域", max_length=64, null=True, blank=True)
+    business_segment = models.CharField(verbose_name="业务板块描述", max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -104,12 +106,12 @@ class SalesTeam(models.Model):
 class Salesperson(models.Model):
     """ 销售人员 """
     name = models.CharField(verbose_name="销售人员姓名", max_length=64)
+    team = models.ForeignKey(verbose_name="团队", to="SalesTeam", to_field="id", null=True, blank=True, on_delete=models.SET_NULL)
     status_choices = {
         (1, "组员"),
         (2, "经理"),
     }
     status = models.SmallIntegerField(verbose_name="级别", choices=status_choices, default=1)
-    team = models.ForeignKey(verbose_name="团队", to="SalesTeam", to_field="id", null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name

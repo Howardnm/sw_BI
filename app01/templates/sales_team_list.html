@@ -30,6 +30,8 @@
                 <tr>
                     <th>ID</th>
                     <th>销售团队名称</th>
+                    <th>业务区域</th>
+                    <th>业务板块描述</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -38,6 +40,8 @@
                     <tr>
                         <th>{{ obj.id }}</th>
                         <td>{{ obj.name }}</td>
+                        <td>{{ obj.business_area }}</td>
+                        <td>{{ obj.business_segment }}</td>
                         <td>
                             <a class="btn btn-xs btn-primary" href="/salesteam/{{ obj.id }}/edit">编辑</a>
                             <a class="btn btn-xs btn-danger" href="/salesteam/{{ obj.id }}/delete">删除</a>
