@@ -11,7 +11,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# 安装c++，以便于Python的mysqlclient的安装
+# 安装c++，mysqlclient的编译安装依赖于c库
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     build-essential \
@@ -34,7 +34,7 @@ FROM python:3.8-slim
 
 # 安装 Nginx 和 Python 依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libmariadb-dev \
+    libmariadb3 \
     nginx \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /usr/share/man/* /usr/share/locale/*
