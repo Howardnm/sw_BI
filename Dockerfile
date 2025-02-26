@@ -64,7 +64,7 @@ ENV PYTHONUNBUFFERED=1
 # Switch to non-root user
 #USER appuser
 
-# Expose the application port
+# Expose the application port(这个只是端口映射的一个标注或注释，写不写没啥用)
 EXPOSE 8000
 
 # Start the application using Gunicorn

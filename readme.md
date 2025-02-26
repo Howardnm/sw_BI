@@ -1,7 +1,7 @@
 # 构建docker容器
 
 ```shell
-docker build -t sw_bi .
+docker build -t sw_bi . -f Dockerfile --no-cache
 ```
 
 ```shell
