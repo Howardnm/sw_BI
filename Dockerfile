@@ -14,6 +14,11 @@ ENV PYTHONUNBUFFERED=1
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
 
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy the requirements file first (better caching)
 COPY requirements.txt /app/
 
