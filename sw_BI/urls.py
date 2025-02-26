@@ -19,7 +19,7 @@ from django.urls import path, include
 
 # from app01 import views
 from app01.views import depart, user, pretty, admin, account, task, order, chart, upload, salesperson, salesteam, \
-    performance
+    performance, salesdata
 
 urlpatterns = [
     # path('silk/', include('silk.urls', namespace='silk')),
@@ -113,5 +113,10 @@ urlpatterns = [
     path('performance/add', performance.performance_add),
     path('performance/<int:nid>/edit', performance.performance_edit),
     path('performance/<int:nid>/delete', performance.performance_delete),
+    # 销售大信息
+    path('salesdata/list', salesdata.salesdata_list),
+    path('salesdata/add', salesdata.salesdata_add),
+    path('salesdata/<int:nid>/edit', salesdata.salesdata_edit),
+    path('salesdata/<int:nid>/delete', salesdata.salesdata_delete),
 
 ]

@@ -263,3 +263,9 @@ class PerformanceModelForm(BootStrapModelForm):
             if exists:
                 self.add_error("month", "该月份数据已存在！")
         return cleaned_data
+
+
+class SalesDataModelForm(BootStrapModelForm):
+    class Meta:
+        model = models.Salesperson
+        fields = "__all__"

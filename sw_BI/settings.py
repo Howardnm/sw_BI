@@ -79,10 +79,21 @@ WSGI_APPLICATION = 'sw_BI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sw_bi',  # 数据库名字
+        'USER': 'root',
+        'PASSWORD': 'hxc850996480',
+        'HOST': 'bueess.top',
+        'PORT': 3308,
     }
 }
 

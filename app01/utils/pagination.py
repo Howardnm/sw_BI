@@ -128,7 +128,7 @@ class Pagination:
         if self.page < self.total_page_count - self.plus:
             ele = f'<li><a href="?{self.query_dict.urlencode()}"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></li>'
             page_str_list.append(ele)
-        page_str_list.append(search_string)
+        # page_str_list.append(search_string)  # 添加输入跳转
         page_string = mark_safe("".join(page_str_list))  # 导入django的mark_safe模块，字符串才会写进html页面中
 
         return page_string
