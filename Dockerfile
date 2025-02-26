@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     build-essential \
     pkg-config \
-    default-libmysqlclient-dev \
+    libmariadb-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install dependencies
@@ -34,9 +34,8 @@ FROM python:3.8-slim
 
 # 安装 Nginx 和 Python 依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libmysqlclient-dev \
+    libmariadb-dev \
     nginx \
-    vim \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /usr/share/man/* /usr/share/locale/*
 
