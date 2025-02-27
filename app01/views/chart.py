@@ -18,6 +18,10 @@ def chart_list(request):
     return render(request, "chart.html", context)
 
 
+def chart_list2(request):
+    return render(request, "chart2.html")
+
+
 def chart_bar(request):
     """ 构造柱状图数据 """
     this_year = time.strftime("%Y")
@@ -38,3 +42,12 @@ def chart_bar(request):
     }
 
     return JsonResponse({"status": True, "data": data_dict})
+
+
+def get_sales_data(request):
+    data = {
+        "names": ["张三", "李四", "王五", "赵六", "孙七"],
+        "sales": [50000, 42000, 36000, 31000, 29000],
+        "completion": [60, 85, 80, 75, 70]
+    }
+    return JsonResponse(data)
