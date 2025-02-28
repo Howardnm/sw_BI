@@ -44,7 +44,7 @@ urlpatterns = [
 
     # app02
     # 首页
-    path('', chart.chart_list),
+    path('', salesteam.sales_team_list),
 
     # 登录
     path('login', account.login),

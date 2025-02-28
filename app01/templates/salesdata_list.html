@@ -3,22 +3,52 @@
 {% block content %}
     <div class="container-fluid">
         <div style="margin-bottom: 10px;">
-            <a class="btn btn-primary" href="/salesdata/add"> <!-- 跳转到新页面可用 target="_blank" -->
+            <a class="btn btn-primary" href="/salesdata/add">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                销售信息
+                添加销售信息
             </a>
-            <div style="float: right;width: 300px;">
-                <form method="get">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="搜索" value="{{ n0 }}">
-                        <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                    </span>
-                    </div>
-                </form>
-            </div>
+            <a class="btn btn-primary" href="/salesdata/add">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                导入销售信息
+            </a>
+            <a class="btn btn-primary" id="btnSearch">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                搜索
+            </a>
+
+            <!-- 新建/编辑 对话框 -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">搜索</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form method="get" id="form_search">
+                                <div class="row">
+                                    <div class="form-group">
+                                        {% for search in search_form %}
+                                            <div class="col-xs-6">
+                                                <input type="{{ search.type }}" name="{{ search.name }}"
+                                                       class="form-control"
+                                                       placeholder="{{ search.label }}" value="{{ search.value }}">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                            <button id="btnSave" type="button" class="btn btn-primary">搜 索</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -92,5 +122,23 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            bindBtnSearchEvent();
+        })
+
+        // 弹出新建订单的对话框
+        function bindBtnSearchEvent() {
+            $("#btnSearch").click(function () {
+                // 将正在编辑的ID设置成空
+                EDIT_ID = undefined;
+                // 点击新建按钮，显示对话框
+                $("#myModal").modal("show");
+            });
+        }
+    </script>
 {% endblock %}
 

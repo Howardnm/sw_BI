@@ -267,5 +267,5 @@ class PerformanceModelForm(BootStrapModelForm):
 
 class SalesDataModelForm(BootStrapModelForm):
     class Meta:
-        model = models.Salesperson
+        model = models.SalesData
         fields = "__all__"
