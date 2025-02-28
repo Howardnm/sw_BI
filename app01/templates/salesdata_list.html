@@ -26,7 +26,7 @@
                             <h4 class="modal-title" id="myModalLabel">搜索</h4>
                         </div>
                         <div class="modal-body">
-                            <form method="get" id="form_search">
+                            <form method="get">
                                 <div class="row">
                                     <div class="form-group">
                                         {% for search in search_form %}
@@ -36,6 +36,11 @@
                                                        placeholder="{{ search.label }}" value="{{ search.value }}">
                                             </div>
                                         {% endfor %}
+                                        <div class="col-xs-1">
+                                            <button class="btn btn-default" type="submit">
+                                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
