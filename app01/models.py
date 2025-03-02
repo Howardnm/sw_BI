@@ -134,7 +134,7 @@ class SalesData(models.Model):
     date = models.DateField(verbose_name="日期")
     order_number = models.CharField(verbose_name="单据编号", max_length=64)
     client_company = models.CharField(verbose_name="购货公司", max_length=64)
-    k3 = models.CharField(verbose_name="产品长代码", max_length=64)
+    k3 = models.CharField(verbose_name="K3", max_length=64)
     product_name = models.CharField(verbose_name="产品名称", max_length=64)
     product_specification = models.CharField(verbose_name="规格型号", max_length=64)
     sales_volume = models.IntegerField(verbose_name="实发数量(Kg)")
