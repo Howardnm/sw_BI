@@ -64,7 +64,6 @@ class SearchBar:
                     # 对日期、数字字段，做范围搜索
                     min_value = self.request.GET.get(f"search_{field_name}_min", "")
                     max_value = self.request.GET.get(f"search_{field_name}_max", "")
-                    print(f"Min Value: {min_value}, Max Value: {max_value}")
                     if min_value:
                         data_dict[f"{field_name}__gte"] = field.to_python(min_value)
                     if max_value:
@@ -112,7 +111,7 @@ class SearchBar:
                                     aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title">搜 索</h4>
                         </div>
-                        <form method="get" id="btnSearchBar_form">
+                        <form method="get" id="btnSearchBar_form" novalidate>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="form-group">
@@ -167,7 +166,7 @@ class SearchBar:
                     });
                 }
         
-                // 搜索框的保存按钮
+                // 搜索框的清空按钮
                 function bindBtnSearchBarClearEvent() {
                     $("#btnSearchBarClear").click(function () {
                         $("#btnSearchBar_form")[0].reset();

@@ -25,6 +25,7 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
+                        <th>操作</th>
                         <th>日期</th>
                         <th>单据编号</th>
                         <th>购货公司</th>
@@ -45,19 +46,22 @@
                         <th>产品线</th>
                         <th>主打产品</th>
                         <th>订单类别</th>
-                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for obj in queryset %}
                         <tr>
-                            <th>{{ obj.date }}</th>
+                            <td>
+                                <a class="btn btn-xs btn-primary" href="/salesdata/{{ obj.id }}/edit">编辑</a>
+                                <a class="btn btn-xs btn-danger" href="/salesdata/{{ obj.id }}/delete">删除</a>
+                            </td>
+                            <td>{{ obj.date }}</td>
                             <td>{{ obj.order_number }}</td>
                             <td>{{ obj.client_company }}</td>
-                            <td>{{ obj.k3 }}</td>
+                            <th>{{ obj.k3 }}</th>
                             <td>{{ obj.product_name }}</td>
                             <td>{{ obj.product_specification }}</td>
-                            <td>{{ obj.sales_volume }}</td>
+                            <th>{{ obj.sales_volume }}</th>
                             <td>{{ obj.department }}</td>
                             <td>{{ obj.salesperson }}</td>
                             <td>{{ obj.gross_unit_price }}</td>
@@ -71,10 +75,6 @@
                             <td>{{ obj.product_category }}</td>
                             <td>{{ obj.core_product }}</td>
                             <td>{{ obj.order_type }}</td>
-                            <td>
-                                <a class="btn btn-xs btn-primary" href="/salesdata/{{ obj.id }}/edit">编辑</a>
-                                <a class="btn btn-xs btn-danger" href="/salesdata/{{ obj.id }}/delete">删除</a>
-                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
