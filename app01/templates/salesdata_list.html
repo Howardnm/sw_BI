@@ -7,10 +7,25 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 添加销售信息
             </a>
-            <a class="btn btn-primary" href="/salesdata/add">
+            <a class="btn btn-primary" href="/salesdata/addform">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 导入销售信息
             </a>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                    批量上传
+                </div>
+                <div class="panel-body">
+                    <form method="post" enctype="multipart/form-data" action="/salesdata/addform">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="file" name="upload_file">
+                        </div>
+                        <input type="submit" value="上传" class="btn btn-info btn-sm">
+                    </form>
+                </div>
+            </div>
             <a class="btn btn-success" id="btnSearchBar" style="float: right">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                 搜 索
@@ -96,4 +111,5 @@
 {% block js %}
     {{ search_js }}
 {% endblock %}
+
 

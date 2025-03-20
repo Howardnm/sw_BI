@@ -118,6 +118,7 @@ urlpatterns = [
     # 销售大信息
     path('salesdata/list', salesdata.salesdata_list),
     path('salesdata/add', salesdata.salesdata_add),
+    path('salesdata/addform', salesdata.salesdata_addform),
     path('salesdata/<int:nid>/edit', salesdata.salesdata_edit),
     path('salesdata/<int:nid>/delete', salesdata.salesdata_delete),
 

@@ -3,20 +3,19 @@ from django.shortcuts import render, HttpResponse, redirect
 from app01 import models
 from app01.utils.form import SalespersonModelForm
 from app01.utils.pagination import Pagination
+from app01.utils.search_bar import SearchBar
 
 
 def sales_person_list(request):
     """ 销售人员列表 """
-    data_dict = {}
-    search_data = request.GET.get("q", "")  # 有值传值，没值传空
-    if search_data:
-        data_dict["name__contains"] = search_data  # __contains：指mobile的值包含变量search_data的字符串，即可搜出
-
+    form = SalespersonModelForm()
+    search_bar = SearchBar(request, form)
     # select * from 表 order by level desc;【Django中：-id是desc, id是asc】
-    queryset = models.Salesperson.objects.filter(**data_dict).order_by("id")
+    queryset = models.Salesperson.objects.filter(**search_bar.filter()).order_by("id")
     page_obj = Pagination(request, queryset, "page")
     context = {
-        "search": search_data,  # 搜索框保留搜索值
+        "search_html": search_bar.html(),  # 搜索框
+        "search_js": search_bar.js(),  # 搜索框
         "queryset": page_obj.page_queryset,  # 分完页的数据
         "page_string": page_obj.html()  # html页码
     }

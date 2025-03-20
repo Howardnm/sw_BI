@@ -7,18 +7,10 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 新建销售人员
             </a>
-            <div style="float: right;width: 300px;">
-                <form method="get">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="搜索" value="{{ search }}">
-                        <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                    </span>
-                    </div>
-                </form>
-            </div>
+            <a class="btn btn-success" id="btnSearchBar" style="float: right">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                搜 索
+            </a>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -57,4 +49,10 @@
             </ul>
         </div>
     </div>
+    <!-- 搜索框弹窗 -->
+    {{ search_html }}
+{% endblock %}
+
+{% block js %}
+    {{ search_js }}
 {% endblock %}
