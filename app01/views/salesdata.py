@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from app01 import models
 from app01.utils.form import SalesDataModelForm
@@ -28,10 +29,13 @@ def salesdata_edit(request):
     return None
 
 
-def salesdata_delete(request, nid):
+def salesdata_delete(request):
     """ 删除销售数据 """
-    models.SalesData.objects.filter(id=nid).delete()
-    return redirect("/salesdata/list")
+    uid = request.GET.get("uid")
+    if not models.SalesData.objects.filter(id=uid).exists():
+        return JsonResponse({"status": False, "error": "删除失败，数据不存在"})
+    models.SalesData.objects.filter(id=uid).delete()
+    return JsonResponse({"status": True})
 
 
 def salesdata_addform(request):
@@ -45,6 +49,7 @@ def salesdata_addform(request):
 
     # 3.循环获取每一行数据
     for row in sheet.iter_rows(min_row=2):
+        print(row[0].value)
         date_dict = {}
         date_dict['date'] = row[0].value
         date_dict['order_number'] = row[1].value
@@ -71,4 +76,4 @@ def salesdata_addform(request):
         print(date_dict)
         models.SalesData.objects.create(**date_dict)
 
-    return redirect('/salesdata/list')
+    return JsonResponse({"status": True})
