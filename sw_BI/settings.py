@@ -92,8 +92,9 @@ DATABASES = {
         'NAME': 'sw_bi',  # 数据库名字
         'USER': 'root',
         'PASSWORD': 'hxc850996480',
-        'HOST': 'bueess.top',
-        'PORT': 3308,
+        # 'HOST': 'bueess.top',
+        'HOST': '192.168.123.226',
+        'PORT': 3306,
     }
 }
 
