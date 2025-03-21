@@ -50,10 +50,10 @@
                     </thead>
                     <tbody>
                     {% for obj in queryset %}
-                        <tr>
+                        <tr uid="{{ obj.id }}">
                             <td>
                                 <a class="btn btn-xs btn-primary" href="/salesdata/{{ obj.id }}/edit">编辑</a>
-                                <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">  <!-- 自定义一个uid属性，用于传值给js。自定义一个btn-delete，用于js绑定 -->
+                                <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
                             </td>
                             <td>{{ obj.date }}</td>
                             <td>{{ obj.order_number }}</td>
@@ -91,17 +91,17 @@
 
     <!-- 搜索框弹窗 -->
     {{ search_html }}
+    {{ delete_Modal }}
 
     <!-- 批量上传 对话框 -->
     <div class="modal fade" id="myModal_uploadBar" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title">Excel批量上传</h4>
                 </div>
-                <form id="Upload_formAdd" method="post" enctype="multipart/form-data" novalidate>
+                <form id="formUploadFile" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
                     <div class="form-group">
                         <input type="file" name="upload_file">
@@ -115,28 +115,15 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <!-- 删除提醒 对话框 -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="alert alert-danger alert-dismissible fade in" role="alert">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4>是否确定删除？</h4>
-                <p style="margin-bottom: 10px">删除后，所有关联的数据都会被删除的。</p>
-                <p style="text-align: right">
-                    <button id="btnConfirmDelete" type="button" class="btn btn-danger">确 定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                </p>
-            </div>
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 {% endblock %}
 
 {% block js %}
     {{ search_js }}
+    {{ delete_js }}
     <script type="text/javascript">
         $(function () {
             bindBtnUploadBarEvent();
-            bindBtnSaveEvent();
+            bindBtnUploadSaveEvent();
         })
 
         // 弹出对话框
@@ -148,68 +135,41 @@
         }
 
         // 批量上传的对话框的保存按钮
-        function bindBtnSaveEvent() {
+        function bindBtnUploadSaveEvent() {
             $("#btnUpload").click(function () {
-                var formData = new FormData($("#Upload_formAdd")[0]); // 获取表单数据
+                event.preventDefault();  // 阻止表单的默认提交行为
+
+                var originalText = $(this).text();  // 保存原始按钮文字
+                var originalClass = $(this).attr("class");  // 保存原始 class
+                $(this).text('导入中...');  // 更改按钮文字
+                $(this).removeClass("btn-primary").addClass("btn-warning");  // 修改按钮样式为“警告”按钮
+
+                var formData = new FormData($("#formUploadFile")[0]); // 获取表单数据
                 $.ajax({
                     url: "/salesdata/addform",
                     type: "post",
                     data: formData,
                     processData: false,  // 不处理数据，让 FormData 以二进制形式传输
                     contentType: false,  // 让浏览器自动设置 Content-Type
-                    success: function() {
-                        location.reload();// 用JS实现页面的刷新（推荐，简单粗暴）
-                    }
-                });
-            });
-        }
-
-    </script>
-
-    <script type="text/javascript">
-        var DELETE_ID;
-
-        $(function () {
-            bindBtnDeleteEvent();
-            bindBtnConfirmDeleteEvent();
-        })
-
-        // 弹出删除订单提示的对话框
-        function bindBtnDeleteEvent() {
-            $(".btn-delete").click(function () {
-                // 显示删除对话框
-                $("#deleteModal").modal("show");
-                // 获取当前行的ID并赋值给全局变量。
-                DELETE_ID = $(this).attr("uid");
-
-            });
-        }
-
-        // 删除订单提示的对话框的确定按钮
-        function bindBtnConfirmDeleteEvent() {
-            $("#btnConfirmDelete").click(function () {
-                // 点击确认删除按钮，将全局变量中设置的那个要删除ID发送到后台。
-                $.ajax({
-                    url: "/salesdata/delete",  // /order/delete?uid=123
-                    type: "GET",
-                    data: {
-                        uid: DELETE_ID,
-                    },
-                    dataType: "JSON",
                     success: function (res) {  // {"status": False, "error": form.errors}
+                        console.log(res);
                         if (res.status) {
-                            // $("#deleteModal").modal("hide");  // 隐藏删除提示框
-                            // $("tr[uid='" + DELETE_ID + "']").remove();  // 在页面上将当前一行数据删除（js，在前端实现）
-                            // DELETE_ID = 0;  // 置空变量
-                            location.reload();// 用JS实现页面的刷新（推荐，简单粗暴）
+                            location.reload();
+                            {#window.location.href = "/salesdata/list";#}
                         } else {
                             alert(res.error);  // 删除失败
                         }
+                    },
+                    complete: function () {
+                        $("#btnUpload").text(originalText);  // 恢复原始按钮文字
+                        $("#btnUpload").attr("class", originalClass);  // 恢复原始 class
                     }
                 });
             });
         }
+
     </script>
+
 {% endblock %}
 
 

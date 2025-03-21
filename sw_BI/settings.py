@@ -92,11 +92,15 @@ DATABASES = {
         'NAME': 'sw_bi',  # 数据库名字
         'USER': 'root',
         'PASSWORD': 'hxc850996480',
-        # 'HOST': 'bueess.top',
-        'HOST': '192.168.123.226',
-        'PORT': 3306,
+        'HOST': 'bueess.top',
+        # 'HOST': '192.168.123.226',
+        # 'PORT': 3306,
+        'PORT': 3308,
+        'CONN_MAX_AGE': 600,  # 设置数据库连接最大存活时间（秒）
     }
 }
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB，默认是2.5MB
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
