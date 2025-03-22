@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container-fluid">
         <div style="margin-bottom: 10px;">
-            <a class="btn btn-primary" href="/salesdata/add">
+            <a class="btn btn-primary" id="btnAddBar">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 添加销售信息
             </a>
@@ -19,7 +19,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                大信息列表
+                销售数据
             </div>
             <div style="overflow-x: auto; white-space: nowrap;">
                 <table class="table table-bordered">
@@ -52,7 +52,7 @@
                     {% for obj in queryset %}
                         <tr uid="{{ obj.id }}">
                             <td>
-                                <a class="btn btn-xs btn-primary" href="/salesdata/{{ obj.id }}/edit">编辑</a>
+                                <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-edit" value="编辑">
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
                             </td>
                             <td>{{ obj.date }}</td>
@@ -89,86 +89,20 @@
         </div>
     </div>
 
-    <!-- 搜索框弹窗 -->
-    {{ search_html }}
+    {{ search_Modal }}
+    {{ add_Modal }}
+    {{ edit_Modal }}
     {{ delete_Modal }}
-
-    <!-- 批量上传 对话框 -->
-    <div class="modal fade" id="myModal_uploadBar" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Excel批量上传</h4>
-                </div>
-                <form id="formUploadFile" enctype="multipart/form-data" novalidate>
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="file" name="upload_file">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                        <button id="btnUpload" class="btn btn-primary">上 传</button>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    {{ upload_Modal }}
 
 {% endblock %}
 
 {% block js %}
     {{ search_js }}
+    {{ add_js }}
+    {{ edit_js }}
     {{ delete_js }}
-    <script type="text/javascript">
-        $(function () {
-            bindBtnUploadBarEvent();
-            bindBtnUploadSaveEvent();
-        })
-
-        // 弹出对话框
-        function bindBtnUploadBarEvent() {
-            $("#btnUploadBar").click(function () {
-                // 点击该按钮，显示对话框
-                $("#myModal_uploadBar").modal("show");
-            });
-        }
-
-        // 批量上传的对话框的保存按钮
-        function bindBtnUploadSaveEvent() {
-            $("#btnUpload").click(function () {
-                event.preventDefault();  // 阻止表单的默认提交行为
-
-                var originalText = $(this).text();  // 保存原始按钮文字
-                var originalClass = $(this).attr("class");  // 保存原始 class
-                $(this).text('导入中...');  // 更改按钮文字
-                $(this).removeClass("btn-primary").addClass("btn-warning");  // 修改按钮样式为“警告”按钮
-
-                var formData = new FormData($("#formUploadFile")[0]); // 获取表单数据
-                $.ajax({
-                    url: "/salesdata/addform",
-                    type: "post",
-                    data: formData,
-                    processData: false,  // 不处理数据，让 FormData 以二进制形式传输
-                    contentType: false,  // 让浏览器自动设置 Content-Type
-                    success: function (res) {  // {"status": False, "error": form.errors}
-                        console.log(res);
-                        if (res.status) {
-                            location.reload();
-                            {#window.location.href = "/salesdata/list";#}
-                        } else {
-                            alert(res.error);  // 删除失败
-                        }
-                    },
-                    complete: function () {
-                        $("#btnUpload").text(originalText);  // 恢复原始按钮文字
-                        $("#btnUpload").attr("class", originalClass);  // 恢复原始 class
-                    }
-                });
-            });
-        }
-
-    </script>
+    {{ upload_js }}
 
 {% endblock %}
 

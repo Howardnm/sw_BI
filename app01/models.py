@@ -140,9 +140,9 @@ class SalesData(models.Model):
     sales_volume = models.IntegerField(verbose_name="实发数量(Kg)")
     department = models.CharField(verbose_name="部门", max_length=64)
     salesperson = models.CharField(verbose_name="业务员", max_length=64)
-    gross_unit_price = models.DecimalField(verbose_name="销售单价(元/Kg)", max_digits=16, decimal_places=3, default=0)  # 整数位8(16-3)，小数位3
+    gross_unit_price = models.DecimalField(verbose_name="销售单价(元/Kg)", max_digits=27, decimal_places=14, default=0)  # 整数位13(16-3)，小数位3
     # 销售金额（元）= 实发数量 * 销售单价(元/Kg）
-    net_unit_price = models.DecimalField(verbose_name="不含税单价(元/Kg)", max_digits=16, decimal_places=3, default=0)  # 验证：销售单价(元/Kg）/ 1.13
+    net_unit_price = models.DecimalField(verbose_name="不含税单价(元/Kg)", max_digits=27, decimal_places=14, default=0)  # 验证：销售单价(元/Kg）/ 1.13
     # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
     actual_client_company = models.CharField(verbose_name="实际购货公司", max_length=64)
     supply_company = models.CharField(verbose_name="供货基地", max_length=64)

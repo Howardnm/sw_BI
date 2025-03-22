@@ -3,18 +3,18 @@ from django.shortcuts import render, HttpResponse, redirect
 from app01 import models
 from app01.utils.form import SalespersonModelForm
 from app01.utils.pagination import Pagination
-from app01.utils.search_bar import SearchBar
+from app01.utils.form_btn_search import FormBtnSearch
 
 
 def sales_person_list(request):
     """ 销售人员列表 """
     form = SalespersonModelForm()
-    search_bar = SearchBar(request, form)
+    search_bar = FormBtnSearch(request, form)
     # select * from 表 order by level desc;【Django中：-id是desc, id是asc】
     queryset = models.Salesperson.objects.filter(**search_bar.filter()).order_by("id")
     page_obj = Pagination(request, queryset, "page")
     context = {
-        "search_html": search_bar.html(),  # 搜索框
+        "search_html": search_bar.html_modal(),  # 搜索框
         "search_js": search_bar.js(),  # 搜索框
         "queryset": page_obj.page_queryset,  # 分完页的数据
         "page_string": page_obj.html()  # html页码

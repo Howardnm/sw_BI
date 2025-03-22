@@ -1,13 +1,46 @@
+"""
+自定义的模态框--删除，使用方法：
+# 在视图函数中：
+    def salesdata_delete(request):
+    uid = request.GET.get("uid")
+    if not models.SalesData.objects.filter(id=uid).exists():
+        return JsonResponse({"status": False, "error": "删除失败，数据不存在"})
+    models.SalesData.objects.filter(id=uid).delete()
+    return JsonResponse({"status": True})
+
+# 在HTML页面中：（依赖jquery）
+    # 1、模态框弹窗激活按钮
+        {% for obj in queryset %}
+            <tr uid="{{ obj.id }}">
+                <td>
+                    <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
+                </td>
+            </tr>
+        {% endfor %}
+    # 2、模态框弹窗组件，放在html_body随意一个位置
+    {{ delete_Modal }}
+    # 3、导入模态框的js
+    {% block js %}
+        {{ delete_js }}
+    {% endblock %}
+"""
+
 from django.utils.safestring import mark_safe
 
 
 class FormBtnDelete:
 
-    def __init__(self, delete_post_url, delete_tips="删除后，所有关联的数据都会被删除的。"):
-        self.delete_post_url = delete_post_url
+    def __init__(self, delete_get_url, delete_tips="删除后，所有关联的数据都会被删除的。"):
+        """
+        属性：
+        :param delete_get_url: get删除请求的url
+        :param delete_tips: 模态框提示内容
+        """
+        self.delete_get_url = delete_get_url
         self.delete_tips = delete_tips
 
     def html_modal(self):
+        """ 删除-模态框 """
         page_str_list = []
         page = f"""
             <!-- 删除提醒 对话框 -->
@@ -56,7 +89,7 @@ class FormBtnDelete:
                     $("#btnConfirmDelete").click(function () {{
                         // 点击确认删除按钮，将全局变量中设置的那个要删除ID发送到后台。
                         $.ajax({{
-                            url: "{self.delete_post_url}",  // /order/delete?uid=123
+                            url: "{self.delete_get_url}",  // /order/delete?uid=123
                             type: "GET",
                             data: {{
                                 uid: DELETE_ID,

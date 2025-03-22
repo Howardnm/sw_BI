@@ -27,7 +27,7 @@ from django.forms import DateField, DecimalField, IntegerField
 from django.utils.safestring import mark_safe
 
 
-class SearchBar:
+class FormBtnSearch:
 
     def __init__(self, request, modelform):
         """
@@ -98,7 +98,7 @@ class SearchBar:
                 search_form.append(obj)
         return search_form
 
-    def html(self):
+    def html_modal(self):
         """ 制作搜索框的html代码 """
         page_str_list = []
 
