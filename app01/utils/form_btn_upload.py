@@ -91,9 +91,9 @@ class FormBtnUpload:
                             <div class="modal-body">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                                 <div class="form-group">
+                                    <div class="alert alert-danger hide" role="alert" id="myModal_uploadBar_error" style="margin-top: 10px"></div>
                                     <label style="margin-bottom: 10px">{self.modal_label}</label>
                                     <input type="file" name="upload_file" >
-                                    <div class="alert alert-danger hide" role="alert" id="myModal_uploadBar_error"></div>
                                 </div>
                             </div>
                             <div class="modal-footer">
