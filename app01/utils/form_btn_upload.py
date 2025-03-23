@@ -61,16 +61,18 @@ from django.utils.safestring import mark_safe
 
 class FormBtnUpload:
 
-    def __init__(self, request, upload_post_url, modal_tittle, modal_label):
+    def __init__(self, request, upload_post_url, template_file_url, modal_tittle, modal_label):
         """
         属性：
         :param request: 请求的对象
         :param upload_post_url: 提交表单的url
+        :param template_file_url: 模板文件
         :param modal_tittle: 模态框标题
         :param modal_label: 上传文件按钮上方的提示内容
         """
         self.request = request
         self.upload_post_url = upload_post_url
+        self.template_file_url = template_file_url
         self.modal_tittle = modal_tittle
         self.modal_label = modal_label
 
@@ -91,12 +93,13 @@ class FormBtnUpload:
                             <div class="modal-body">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                                 <div class="form-group">
-                                    <div class="alert alert-danger hide" role="alert" id="myModal_uploadBar_error" style="margin-top: 10px"></div>
                                     <label style="margin-bottom: 10px">{self.modal_label}</label>
                                     <input type="file" name="upload_file" >
+                                    <div class="alert alert-danger hide" role="alert" id="myModal_uploadBar_error" style="margin-top: 10px"></div>
                                 </div>
                             </div>
                             <div class="modal-footer">
+                                <a href="{self.template_file_url}" type="button" class="btn btn-info" style="float: left">模板文件下载</a>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                                 <button id="btnUpload" class="btn btn-primary">上 传</button>
                             </div>

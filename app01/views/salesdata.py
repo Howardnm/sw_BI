@@ -22,7 +22,7 @@ def salesdata_list(request):
     add_obj = FormBtnAdd(request, form, "/salesdata/add", "新增销售数据")  # 添加框组件对象
     edit_obj = FormBtnEdit(request, form, "/salesdata/edit_detail", "/salesdata/edit", "编辑销售数据")  # 编辑框组件对象
     del_obj = FormBtnDelete("/salesdata/delete")  # 删除框组件对象
-    upload_obj = FormBtnUpload(request, "/salesdata/addform", "导入销售信息", "选择规范化的excel文件进行导入")  # excel批量上传框组件对象
+    upload_obj = FormBtnUpload(request, "/salesdata/addform", "/static/files/salesdata_addform.xlsx", "导入销售信息", "选择规范化的excel文件进行导入")  # excel批量上传框组件对象
     context = {
         # 搜索框组件
         "search_Modal": search_bar.html_modal(),
