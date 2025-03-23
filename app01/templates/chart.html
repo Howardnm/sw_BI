@@ -1,169 +1,204 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="zh">
 {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BI展板首页</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-5.3.3-dist/css/bootstrap.min.css' %}">
 
-{% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">【营销中心团队】{{ this_year }}年累计销售额完成率及排名</div>
-                    <table class="panel-body table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>业务团队</th>
-                            <th>销售经理</th>
-                            <th>1-{{ this_month }}月指标完成率</th>
-                            <th>1-{{ this_month }}月销售额排名</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for obj in queryset %}
-                            <tr>
-                                <th>{{ obj.name.team }}</th>
-                                <td>{{ obj.name }}</td>
-                                <td>{{ obj.get_status_display }}</td>
-                                <td>{{ obj.team }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+    <style>
+        /* 自定义小卡片样式 */
+        .card-small .card-body {
+            padding: 5px;
+        }
+
+        .card-small .card-title {
+            font-size: 1.1rem;
+        }
+
+        .card-small .card-text {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list" role="button">返回系统</a>
+    <h4 class="text-center mb-2" style="margin-top: 10px">销售业绩及数据</h4>
+    <!-- 数据总览 -->
+    <div class="row text-center">
+        <div class="col-sm-2">
+            <div class="card card-small bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">总销售额</h5>
+                    <p class="card-text" id="total-sales">$1,200,000</p>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">柱状图</div>
-                    <div class="panel-body">
-                        <div id="m2" style="width: 100%;height:300px"></div>
-                    </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">本月增长</h5>
+                    <p class="card-text">+15%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">活跃业务员</h5>
+                    <p class="card-text">45</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">本月目标完成率</h5>
+                    <p class="card-text">80%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-info bg-opacity-75 text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">新客户</h5>
+                    <p class="card-text">120</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-secondary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">退货率</h5>
+                    <p class="card-text">2%</p>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
 
-{% block js %}
-    <script src="{% static "/js/echarts.min.js" %}"></script>
-    <script src="{% static "/js/highcharts.js" %}"></script>
-    <script type="text/javascript">
-        // 每 5 秒自动刷新一次函数
-        setInterval(initBar, 5000);
-        setInterval(flash, 20000);
-        $(function () {
-            initBar();
-        })
+    <!-- 业务员业绩排行 -->
+    <div class="row mt-4">
+        <!-- 每月销售额趋势 -->
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat1"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat2"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+    </div>
 
-        function flash() {
-            location.reload();
-        }
 
-        /**
-         * 初始化柱状图
-         * */
-        function initBar() {
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = echarts.init(document.getElementById('m2'));
-            // 指定图表的配置项和数据
-            var option = {
-                title: {
-                    text: '{{ this_year }}年每月销量',
-                    left: "center"
+</div>
+
+<script src="{% static 'plugins/bootstrap-5.3.3-dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'plugins/highcharts-12.1.2/code/highcharts.js' %}"></script>
+<script src="{% static 'plugins/highcharts-12.1.2/code/modules/exporting.js' %}"></script>
+<script>
+    // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
+    $(document).ready(function () {
+        ajax_post("/chart/api/1", chart_column, "chat1");
+        ajax_post("/chart/api/2", chart_column, "chat2");
+    });
+
+    function ajax_post(url, callback, idx) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+            success: function (res) {
+                console.log(res)
+                callback(res, idx); // 确保数据加载完成后再执行 callback
+            },
+            error: function (xhr, status, error) {
+                console.error("数据加载失败:", error);
+            }
+        });
+    }
+
+
+    function chart_column(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: res.data.title,
+            },
+            xAxis: {
+                categories: res.data.xAxis,
+            },
+            yAxis: [
+                {min: 0, title: {text: res.data.yAxis.left}},
+                {title: {text: res.data.yAxis.right}, opposite: true}
+            ],
+            legend: {shadow: false},
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {grouping: false, shadow: false, borderWidth: 0}
+            },
+            series: [{
+                name: res.data.series.a.name,
+                color: 'rgba(248,161,63,1)',
+                data: res.data.series.a.data,
+                // dataLabels: {enabled: true},
+                tooltip: {
+                    valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
+                    valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
                 },
-                tooltip: {},
-                legend: {
-                    data: [],  // 后台获取
-                    bottom: 0
+                pointPadding: 0.3, // 柱子宽度
+                pointPlacement: -0.2, // 左右偏移量
+                yAxis: res.data.series.a.yAxis
+            }, {
+                name: res.data.series.b.name,
+                color: 'rgba(186,60,61,.9)',
+                data: res.data.series.b.data,
+                dataLabels: {enabled: true},
+                tooltip: {
+                    valuePrefix: res.data.series.b.valuePrefix,
+                    valueSuffix: res.data.series.b.valueSuffix,
                 },
-                xAxis: {
-                    data: []  // 后台获取
+                pointPadding: 0.4,
+                pointPlacement: -0.2,
+                yAxis: res.data.series.b.yAxis
+            },{
+                name: res.data.series.a.name,
+                color: 'rgba(165,170,217,1)',
+                data: res.data.series.b.data,
+                // dataLabels: {enabled: true},
+                tooltip: {
+                    valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
+                    valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
                 },
-                yAxis: [
-                    {
-                        type: 'value',
-                        name: '销量',
-                        min: 0,
-                        max: 2500,
-                        interval: 500,
-                        axisLabel: {
-                            formatter: '{value} 吨'
-                        }
-                    },
-                    {
-                        type: 'value',
-                        name: '销售额',
-                        min: 0,
-                        max: 1500,
-                        axisLabel: {
-                            formatter: '{value} 万元'
-                        }
-                    },
-                ],
-                series: [
-                    {
-                        name: '销量',
-                        type: 'bar',
-                        tooltip: {
-                            valueFormatter: function (value) {
-                                return value + ' 吨';
-                            }
-                        },
-                        data: []
-                    },
-                    {
-                        name: '业绩',
-                        type: 'bar',
-                        tooltip: {
-                            valueFormatter: function (value) {
-                                return value + ' ml';
-                            }
-                        },
-                        data: []
-                    },
-                    {
-                        name: '销售额',
-                        type: 'line',
-                        smooth: true,
-                        z: -1,
-                        areaStyle: {opacity: 0.5},  // 透明度（0 完全透明，1 不透明）
-                        tooltip: {
-                            valueFormatter: function (value) {
-                                return value + ' 万元';
-                            },
-                        },
-                        data: [1500, 1400, 800, 400,]
-                    },
-                    {
-                        name: '销售额1',
-                        type: 'line',
-                        smooth: true,
-                        tooltip: {
-                            valueFormatter: function (value) {
-                                return value + ' 万元';
-                            },
-                        },
-                        data: [800, 1400, 300, 1300,]
-                    },
-                ]  // 后台获取
-            };
+                pointPadding: 0.3, // 柱子宽度
+                pointPlacement: 0.2, // 左右偏移量
+                yAxis: 1
+            }, {
+                name: res.data.series.b.name,
+                color: 'rgba(126,86,134,.9)',
+                data: res.data.series.a.data,
+                dataLabels: {enabled: true},
+                tooltip: {
+                    valuePrefix: res.data.series.b.valuePrefix,
+                    valueSuffix: res.data.series.b.valueSuffix,
+                },
+                pointPadding: 0.4,
+                pointPlacement: 0.2,
+                yAxis: 1
+            }]
+        });
+    }
 
-            $.ajax({
-                url: "/chart/bar",
-                type: "get",
-                dataType: "JSON",
-                success: function (res) {
-                    // 将后台返回的数据，更新到option中。
-                    if (res.status) {
-                        option.legend.data = res.data.legend
-                        option.xAxis.data = res.data.x_axis
-                        option.series[0].data = res.data.data1
-                        option.series[1].data = res.data.data2
-
-                        // 使用刚指定的配置项和数据显示图表。
-                        myChart.setOption(option);
-                    }
-                }
-            });
-        }
-    </script>
-{% endblock %}
+</script>
+</body>
+</html>

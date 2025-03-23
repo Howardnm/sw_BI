@@ -121,9 +121,9 @@ class Performance(models.Model):
     """ 个人业绩状况 """
     name = models.ForeignKey(verbose_name="成员", to="Salesperson", to_field="id", on_delete=models.CASCADE)
     month = models.DateField(verbose_name="月份")
-    target = models.IntegerField(verbose_name="当月指标任务")
-    target_achievement = models.IntegerField(verbose_name="当月指标达成")
-    sales_revenue = models.IntegerField(verbose_name="当月销售额")
+    target_sales_volume = models.IntegerField(verbose_name="当月销售量任务指标(Kg)", default=0)
+    target_sales_revenue = models.IntegerField(verbose_name="当月销售额任务指标(元)", default=0)
+    target_sales_profit = models.IntegerField(verbose_name="当月销售利润任务指标(元)", default=0)
 
     def __str__(self):
         return self.name

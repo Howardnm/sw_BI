@@ -24,9 +24,9 @@
                     <th>级别</th>
                     <th>成员</th>
                     <th>月份</th>
-                    <th>当月指标任务</th>
-                    <th>当月指标达成</th>
-                    <th>当月销售额</th>
+                    <th>当月销售量指标(Kg)</th>
+                    <th>当月销售额指标(￥)</th>
+                    <th>当月利润指标(￥)</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -37,9 +37,9 @@
                         <th>{{ obj.name.get_status_display }}</th>
                         <th>{{ obj.name }}</th>
                         <td>{{ obj.month|date:"Y年m月" }}</td>
-                        <td>{{ obj.target }}</td>
-                        <td>{{ obj.target_achievement }}</td>
-                        <td>{{ obj.sales_revenue }}</td>
+                        <td>{{ obj.target_sales_volume }}</td>
+                        <td>{{ obj.target_sales_revenue }}</td>
+                        <td>{{ obj.target_sales_profit }}</td>
                         <td>
                             <a class="btn btn-xs btn-primary" href="/performance/{{ obj.id }}/edit">编辑</a>
                             <a class="btn btn-xs btn-danger" href="/performance/{{ obj.id }}/delete">删除</a>

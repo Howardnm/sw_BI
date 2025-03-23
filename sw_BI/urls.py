@@ -93,9 +93,8 @@ urlpatterns = [
 
     # 数据统计
     path('chart/list', chart.chart_list),
-    path('chart/list2', chart.chart_list2),
-    path('chart/bar', chart.chart_bar),
-    path('chart/get_sales_data', chart.get_sales_data),
+    path('chart/api/1', chart.chat_api1),
+    path('chart/api/2', chart.chat_api2),
 
     # 上传文件
     path('upload/list', upload.upload_list),
