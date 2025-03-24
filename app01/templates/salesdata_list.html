@@ -11,6 +11,10 @@
                 <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
                 导入销售信息
             </a>
+            <a class="btn btn-danger" id="btn-delete-all">
+                <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
+                一键删除所有销售数据
+            </a>
             <a class="btn btn-success" id="btnSearchBar" style="float: right">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                 搜 索
@@ -93,6 +97,7 @@
     {{ add_Modal }}
     {{ edit_Modal }}
     {{ delete_Modal }}
+    {{ delete_all_Modal }}
     {{ upload_Modal }}
 
 {% endblock %}
@@ -102,6 +107,7 @@
     {{ add_js }}
     {{ edit_js }}
     {{ delete_js }}
+    {{ delete_all_js }}
     {{ upload_js }}
 
 {% endblock %}

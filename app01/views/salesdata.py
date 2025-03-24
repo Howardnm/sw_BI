@@ -4,8 +4,10 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.utils.safestring import mark_safe
 
 from app01 import models
+from app01.utils.encrypt import md5
 from app01.utils.form import SalesDataModelForm
 from app01.utils.form_btn_add import FormBtnAdd
+from app01.utils.form_btn_delete_all import FormBtnDelAll
 from app01.utils.form_btn_edit import FormBtnEdit
 from app01.utils.form_btn_delete import FormBtnDelete
 from app01.utils.form_btn_upload import FormBtnUpload
@@ -22,6 +24,8 @@ def salesdata_list(request):
     add_obj = FormBtnAdd(request, form, "/salesdata/add", "新增销售数据")  # 添加框组件对象
     edit_obj = FormBtnEdit(request, form, "/salesdata/edit_detail", "/salesdata/edit", "编辑销售数据")  # 编辑框组件对象
     del_obj = FormBtnDelete("/salesdata/delete")  # 删除框组件对象
+    del_all_obj = FormBtnDelAll(request, "/salesdata/delete_all", "请输入管理员密码")  # 一键删除框组件对象
+
     upload_obj = FormBtnUpload(request, "/salesdata/addform", "/static/files/salesdata_addform.xlsx", "导入销售信息", "选择规范化的excel文件进行导入")  # excel批量上传框组件对象
     context = {
         # 搜索框组件
@@ -36,6 +40,9 @@ def salesdata_list(request):
         # 删除框组件
         "delete_Modal": del_obj.html_modal(),
         "delete_js": del_obj.js(),
+        # 一键删除框组件
+        "delete_all_Modal": del_all_obj.html_modal(),
+        "delete_all_js": del_all_obj.js(),
         # excel批量上传框组件
         "upload_Modal": upload_obj.html_modal(),
         "upload_js": upload_obj.js(),
@@ -89,6 +96,18 @@ def salesdata_delete(request):
         return JsonResponse({"status": False, "error": "删除失败，数据不存在"})
     models.SalesData.objects.filter(id=uid).delete()
     return JsonResponse({"status": True})
+
+
+def salesdata_delete_all(request):
+    """ 删除所有销售数据 """
+    pwd = request.POST.get("pwd", "")
+    if not models.Admin.objects.filter(username="admin").exists():
+        return JsonResponse({"status": False, "error": "超级管理员不存在"})
+    password = models.Admin.objects.filter(username="admin").values().first().get("password")
+    if md5(pwd) == password:
+        models.SalesData.objects.all().delete()
+        return JsonResponse({"status": True})
+    return JsonResponse({"status": False, "error": "密码错误！"})
 
 
 def salesdata_addform(request):

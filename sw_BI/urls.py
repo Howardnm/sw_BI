@@ -121,5 +121,6 @@ urlpatterns = [
     path('salesdata/edit', salesdata.salesdata_edit),
     path('salesdata/edit_detail', salesdata.salesdata_edit_detail),
     path('salesdata/delete', salesdata.salesdata_delete),
+    path('salesdata/delete_all', salesdata.salesdata_delete_all),
 
 ]
