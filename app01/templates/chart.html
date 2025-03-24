@@ -25,7 +25,7 @@
 <body>
 <div class="container-fluid">
     <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list" role="button">返回系统</a>
-    <h4 class="text-center mb-2" style="margin-top: 10px">销售业绩及数据</h4>
+    <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} 销售业绩及数据</h4>
     <!-- 数据总览 -->
     <div class="row text-center">
         <div class="col-sm-2">
@@ -156,8 +156,8 @@
                     valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
                     valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
                 },
-                pointPadding: 0.3, // 柱子宽度
-                pointPlacement: -0.2, // 左右偏移量
+                pointPadding: 0.1, // 柱子宽度
+                pointPlacement: 0, // 左右偏移量
                 yAxis: res.data.series.a.yAxis
             }, {
                 name: res.data.series.b.name,
@@ -168,33 +168,9 @@
                     valuePrefix: res.data.series.b.valuePrefix,
                     valueSuffix: res.data.series.b.valueSuffix,
                 },
-                pointPadding: 0.4,
-                pointPlacement: -0.2,
+                pointPadding: 0.3,
+                pointPlacement: 0,
                 yAxis: res.data.series.b.yAxis
-            },{
-                name: res.data.series.a.name,
-                color: 'rgba(165,170,217,1)',
-                data: res.data.series.b.data,
-                // dataLabels: {enabled: true},
-                tooltip: {
-                    valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
-                    valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
-                },
-                pointPadding: 0.3, // 柱子宽度
-                pointPlacement: 0.2, // 左右偏移量
-                yAxis: 1
-            }, {
-                name: res.data.series.b.name,
-                color: 'rgba(126,86,134,.9)',
-                data: res.data.series.a.data,
-                dataLabels: {enabled: true},
-                tooltip: {
-                    valuePrefix: res.data.series.b.valuePrefix,
-                    valueSuffix: res.data.series.b.valueSuffix,
-                },
-                pointPadding: 0.4,
-                pointPlacement: 0.2,
-                yAxis: 1
             }]
         });
     }

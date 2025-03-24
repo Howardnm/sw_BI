@@ -136,7 +136,7 @@ class SalesData(models.Model):
     client_company = models.CharField(verbose_name="购货公司", max_length=64)
     k3 = models.CharField(verbose_name="K3", max_length=64)
     product_name = models.CharField(verbose_name="产品名称", max_length=64)
-    product_specification = models.CharField(verbose_name="规格型号", max_length=64)
+    product_specification = models.CharField(verbose_name="规格型号", max_length=64, null=True, blank=True)
     sales_volume = models.IntegerField(verbose_name="实发数量(Kg)")
     department = models.CharField(verbose_name="部门", max_length=64)
     salesperson = models.CharField(verbose_name="业务员", max_length=64)
@@ -150,6 +150,6 @@ class SalesData(models.Model):
     product_domain_groups = models.CharField(verbose_name="产品分类(电子电气、家电、汽配、卫浴、内销、贸易)", max_length=64)
     business_trade_categories = models.CharField(verbose_name="贸易类型组别", max_length=64, null=True, blank=True)
     new_and_returning_customers = models.CharField(verbose_name="新老客户", max_length=64)
-    product_category = models.CharField(verbose_name="产品线", max_length=64)  # 搞一个产品线列表，ForeignKey连接
-    core_product = models.CharField(verbose_name="主打产品", max_length=64)  # 搞一个主打产品列表，ForeignKey连接
+    product_category = models.CharField(verbose_name="产品线", max_length=64, null=True, blank=True)  # 搞一个产品线列表，ForeignKey连接，或者用K3联动也行
+    core_product = models.CharField(verbose_name="主打产品", max_length=64, null=True, blank=True)  # 搞一个主打产品列表，ForeignKey连接
     order_type = models.CharField(verbose_name="订单类别", max_length=64)  # 小批订单

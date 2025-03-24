@@ -26,7 +26,7 @@ def chart_list2(request):
 
 def data_month_sales_volume():
     """
-    每月销售吨数
+    每月销售量（吨）
     [23200, 0, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     """
     # 等价于 "SELECT date AS month, sum(sales_volume) FROM SalesData GROUP BY month ORDER BY month"
@@ -41,18 +41,22 @@ def data_month_sales_volume():
     # < QuerySet[{'month': datetime.date(2025, 1, 1), 'sales_volume__sum': 23200}, {'month': datetime.date(2025, 3, 1), 'sales_volume__sum': 5000}] >
     sales_dict = {item["month"].month: item["sales_volume__sum"] for item in monthly_sales_volume}  # .month是取日期的月份
     # {1: 23200, 3: 5000}
-    formatted_sales = [sales_dict.get(month, 0) for month in range(1, 13)]
+    formatted_sales = [round(float(sales_dict.get(month, 0) / 1000), 0) for month in range(1, 13)]  # KG变吨后，银行模式的四舍五入到整数
     # [23200, 0, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     return formatted_sales
 
 
 def data_month_sales_revenue():
+    """
+    每月销售额（万元）
+    [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    """
     queryset: list = (
         models.SalesData.objects
         .filter(date__year=time.strftime("%Y"))
         .annotate(
             revenue=ExpressionWrapper(
-                F("sales_volume") * F("gross_unit_price"),
+                F("sales_volume") * F("net_unit_price"),
                 output_field=DecimalField()
             )
         )
@@ -64,7 +68,7 @@ def data_month_sales_revenue():
     # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
     dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
     # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
-    formatted_sales = [float(dict1.get(month, 0)) for month in range(1, 13)]
+    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
     # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     return formatted_sales
 
@@ -75,22 +79,22 @@ def chat_api1(request):
     data_dict = {
         "status": True,
         "data": {
-            "title": "销售量",
+            "title": "每月销售量",
             "xAxis": ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            "yAxis": {"left": "左纵坐标标题""", "right": ""},
+            "yAxis": {"left": "吨", "right": ""},
             "series": {
                 "a": {
-                    "name": "业绩目标",
-                    "data": [10000, 20000, 30000, 10000, 20000, 30000, 10000, 20000, 30000, 10000, 20000, 30000, ],
+                    "name": "目标销售量",
+                    "data": [3000, 1000, 2000, 3000, 3000, 1000, 2000, 3000, 3000, 1000, 2000, 3000, ],
                     "valuePrefix": ' ',
-                    "valueSuffix": ' Kg',
+                    "valueSuffix": ' 吨',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
                 "b": {
-                    "name": "实际业绩",
+                    "name": "实际销售量",
                     "data": formatted_sales,
                     "valuePrefix": ' ',
-                    "valueSuffix": ' Kg',
+                    "valueSuffix": ' 吨',
                     "yAxis": 0,
                 },
             },
@@ -104,22 +108,22 @@ def chat_api2(request):
     data_dict = {
         "status": True,
         "data": {
-            "title": "销售额",
+            "title": "每月销售额",
             "xAxis": ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            "yAxis": {"left": "左纵坐标标题""", "right": ""},
+            "yAxis": {"left": "万元", "right": ""},
             "series": {
                 "a": {
-                    "name": "业绩目标",
-                    "data": [10000, 20000, 30000, 10000, 20000, 30000, 10000, 20000, 30000, 10000, 20000, 30000, ],
+                    "name": "目标销售额",
+                    "data": [1000, 2000, 1500, 1000, 2000, 1500, 1000, 2000, 1500, 1000, 2000, 1500, ],
                     "valuePrefix": ' ',
-                    "valueSuffix": ' 元',
+                    "valueSuffix": ' 万元',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
                 "b": {
-                    "name": "实际业绩",
+                    "name": "实际销售额",
                     "data": formatted_sales,
                     "valuePrefix": ' ',
-                    "valueSuffix": ' 元',
+                    "valueSuffix": ' 万元',
                     "yAxis": 0,
                 },
             },
