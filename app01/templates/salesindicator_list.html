@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div style="margin-bottom: 10px;">
+            <a class="btn btn-primary" id="btnAddBar">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                添加数据
+            </a>
+            <a class="btn btn-primary" id="btnUploadBar">
+                <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
+                导入数据
+            </a>
+            <a class="btn btn-danger" id="btn-delete-all">
+                <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
+                一键删除所有数据
+            </a>
+            <a class="btn btn-success" id="btnSearchBar" style="float: right">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                搜 索
+            </a>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                个人业绩指标
+            </div>
+            <div style="overflow-x: auto; white-space: nowrap;">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center vertical-center" colspan="5">基本信息</th>
+                        <th class="text-center vertical-center" colspan="12" style="color: #5158f8">1月销量指标(Kg)</th>
+                        <th class="text-center vertical-center" colspan="12" style="color: #f85197">1月销售额指标(￥)</th>
+                    </tr>
+                    <tr>
+                        <th>操作</th>
+                        <th>团队</th>
+                        <th>级别</th>
+                        <th>成员</th>
+                        <th>年份</th>
+                        <th style="color: #5158f8">1月</th>
+                        <th style="color: #5158f8">2月</th>
+                        <th style="color: #5158f8">3月</th>
+                        <th style="color: #5158f8">4月</th>
+                        <th style="color: #5158f8">5月</th>
+                        <th style="color: #5158f8">6月</th>
+                        <th style="color: #5158f8">7月</th>
+                        <th style="color: #5158f8">8月</th>
+                        <th style="color: #5158f8">9月</th>
+                        <th style="color: #5158f8">10月</th>
+                        <th style="color: #5158f8">11月</th>
+                        <th style="color: #5158f8">12月</th>
+                        <th style="color: #f85197">1月</th>
+                        <th style="color: #f85197">2月</th>
+                        <th style="color: #f85197">3月</th>
+                        <th style="color: #f85197">4月</th>
+                        <th style="color: #f85197">5月</th>
+                        <th style="color: #f85197">6月</th>
+                        <th style="color: #f85197">7月</th>
+                        <th style="color: #f85197">8月</th>
+                        <th style="color: #f85197">9月</th>
+                        <th style="color: #f85197">10月</th>
+                        <th style="color: #f85197">11月</th>
+                        <th style="color: #f85197">12月</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for obj in queryset %}
+                        <tr uid="{{ obj.id }}">
+                            <td>
+                                <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-edit" value="编辑">
+                                <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
+                            </td>
+                            <th>{{ obj.name.team }}</th>
+                            <th>{{ obj.name.get_status_display }}</th>
+                            <th>{{ obj.name }}</th>
+                            <th>{{ obj.year }}</th>
+                            <th style="color: #5158f8">{{ obj.target_sales_volume_1 }}</th>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_2 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_3 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_4 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_5 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_6 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_7 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_8 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_9 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_10 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_11 }}</td>
+                            <td style="color: #5158f8">{{ obj.target_sales_volume_12 }}</td>
+                            <th style="color: #f85197">{{ obj.target_sales_revenue_1 }}</th>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_2 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_3 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_4 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_5 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_6 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_7 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_8 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_9 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_10 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_11 }}</td>
+                            <td style="color: #f85197">{{ obj.target_sales_revenue_12 }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div>
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+        </div>
+    </div>
+
+    {{ search_Modal }}
+    {{ add_Modal }}
+    {{ edit_Modal }}
+    {{ delete_Modal }}
+    {{ delete_all_Modal }}
+    {{ upload_Modal }}
+
+{% endblock %}
+
+{% block js %}
+    {{ search_js }}
+    {{ add_js }}
+    {{ edit_js }}
+    {{ delete_js }}
+    {{ delete_all_js }}
+    {{ upload_js }}
+
+{% endblock %}

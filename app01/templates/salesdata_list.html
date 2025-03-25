@@ -31,25 +31,10 @@
                     <tr>
                         <th>操作</th>
                         <th>日期</th>
-                        <th>单据编号</th>
-                        <th>购货公司</th>
                         <th>k3</th>
-                        <th>产品名称</th>
-                        <th>规格型号</th>
                         <th>实发数量(Kg)</th>
-                        <th>部门</th>
-                        <th>业务员</th>
-                        <th>销售单价(元/Kg)</th>
                         <th>不含税单价(元/Kg)</th>
                         <th>实际购货公司</th>
-                        <th>供货基地</th>
-                        <th>内外销</th>
-                        <th>产品分类</th>
-                        <th>贸易类型</th>
-                        <th>新老客户</th>
-                        <th>产品线</th>
-                        <th>主打产品</th>
-                        <th>订单类别</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,25 +45,10 @@
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
                             </td>
                             <td>{{ obj.date }}</td>
-                            <td>{{ obj.order_number }}</td>
-                            <td>{{ obj.client_company }}</td>
                             <th>{{ obj.k3 }}</th>
-                            <td>{{ obj.product_name }}</td>
-                            <td>{{ obj.product_specification }}</td>
                             <th>{{ obj.sales_volume }}</th>
-                            <td>{{ obj.department }}</td>
-                            <td>{{ obj.salesperson }}</td>
-                            <td>{{ obj.gross_unit_price }}</td>
                             <td>{{ obj.net_unit_price }}</td>
-                            <td>{{ obj.actual_client_company }}</td>
-                            <td>{{ obj.supply_company }}</td>
-                            <td>{{ obj.intra_group_or_external_sales }}</td>
-                            <td>{{ obj.product_domain_groups }}</td>
-                            <td>{{ obj.business_trade_categories }}</td>
-                            <td>{{ obj.new_and_returning_customers }}</td>
-                            <td>{{ obj.product_category }}</td>
-                            <td>{{ obj.core_product }}</td>
-                            <td>{{ obj.order_type }}</td>
+                            <td>{{ obj.client_company }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

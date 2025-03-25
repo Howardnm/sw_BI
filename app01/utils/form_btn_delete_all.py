@@ -44,7 +44,7 @@ class FormBtnDelAll:
                         <form id="formDelAll" novalidate><!-- novalidate取消网页端验证，交给Django处理 -->
                             <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                             <label>{self.label}</label>
-                            <input type="text" name="pwd">
+                            <input type="password" name="pwd">
                             <span style="color: red;position: absolute" class="delAll-error-msg"></span>
                         </form>
                         <p style="text-align: right">

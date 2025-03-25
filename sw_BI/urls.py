@@ -19,7 +19,7 @@ from django.urls import path, include
 
 # from app01 import views
 from app01.views import depart, user, pretty, admin, account, task, order, chart, upload, salesperson, salesteam, \
-    performance, salesdata
+    salesindicator, salesdata
 
 urlpatterns = [
     # path('silk/', include('silk.urls', namespace='silk')),
@@ -110,17 +110,19 @@ urlpatterns = [
     path('salesperson/<int:nid>/edit', salesperson.sales_person_edit),
     path('salesperson/<int:nid>/delete', salesperson.sales_person_delete),
     # 个人业绩信息
-    path('performance/list', performance.performance_list),
-    path('performance/add', performance.performance_add),
-    path('performance/<int:nid>/edit', performance.performance_edit),
-    path('performance/<int:nid>/delete', performance.performance_delete),
+    path('salesindicator/list', salesindicator.list),
+    path('salesindicator/add', salesindicator.add),
+    path('salesindicator/edit', salesindicator.edit),
+    path('salesindicator/edit_detail', salesindicator.edit_detail),
+    path('salesindicator/delete', salesindicator.delete),
+    path('salesindicator/delete_all', salesindicator.delete_all),
     # 销售大信息
     path('salesdata/list', salesdata.salesdata_list),
     path('salesdata/add', salesdata.salesdata_add),
-    path('salesdata/addform', salesdata.salesdata_addform),
     path('salesdata/edit', salesdata.salesdata_edit),
     path('salesdata/edit_detail', salesdata.salesdata_edit_detail),
     path('salesdata/delete', salesdata.salesdata_delete),
     path('salesdata/delete_all', salesdata.salesdata_delete_all),
+    path('salesdata/addform', salesdata.salesdata_addform),
 
 ]

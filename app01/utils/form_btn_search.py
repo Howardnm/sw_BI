@@ -39,7 +39,7 @@ class FormBtnSearch:
         self.modelform = modelform
 
     class Object:
-        def __init__(self, name, label, input_type, value=""):
+        def __init__(self, field, name, label, input_type, value=""):
             """
             属性：
             :param name: 输入框的name，提交get时的key
@@ -47,6 +47,7 @@ class FormBtnSearch:
             :param input_type: 输入框的输入类型(text、int、date)
             :param value: 输入框的内容
             """
+            self.field = field
             self.name = name
             self.label = label
             self.type = input_type
@@ -68,6 +69,8 @@ class FormBtnSearch:
                         data_dict[f"{field_name}__gte"] = field.to_python(min_value)
                     if max_value:
                         data_dict[f"{field_name}__lte"] = field.to_python(max_value)
+                elif field.widget.input_type in ["select"]:
+                    data_dict[f"{field_name}"] = search_input
                 else:
                     data_dict[f"{field_name}__icontains"] = search_input  # __icontains：不分大小写搜索
         return data_dict
@@ -78,22 +81,22 @@ class FormBtnSearch:
         for field_name, field in self.modelform.fields.items():
             search_input = self.request.GET.get(f"search_{field_name}", "")  # 有值传值，没值传空
             if search_input:
-                obj = self.Object(f"search_{field_name}", field.label, field.widget.input_type, search_input)
+                obj = self.Object(field, f"search_{field_name}", field.label, field.widget.input_type, search_input)
             else:
-                obj = self.Object(f"search_{field_name}", field.label, field.widget.input_type)
+                obj = self.Object(field, f"search_{field_name}", field.label, field.widget.input_type)
             # 如果是日期字段，添加范围选择
             if isinstance(field, DateField):
                 start_value = self.request.GET.get(f"search_{field_name}_min", "")
                 end_value = self.request.GET.get(f"search_{field_name}_max", "")
-                search_form.append(self.Object(f"search_{field_name}_min", f"开始{field.label}", "date", start_value))
-                search_form.append(self.Object(f"search_{field_name}_max", f"结束{field.label}", "date", end_value))
+                search_form.append(self.Object(field, f"search_{field_name}_min", f"开始{field.label}", "date", start_value))
+                search_form.append(self.Object(field, f"search_{field_name}_max", f"结束{field.label}", "date", end_value))
 
             # 如果是数字字段，添加范围选择
             elif isinstance(field, (DecimalField, IntegerField)):
                 min_value = self.request.GET.get(f"search_{field_name}_min", "")
                 max_value = self.request.GET.get(f"search_{field_name}_max", "")
-                search_form.append(self.Object(f"search_{field_name}_min", f"{field.label}_最小值", "number", min_value))
-                search_form.append(self.Object(f"search_{field_name}_max", f"{field.label}_最大值", "number", max_value))
+                search_form.append(self.Object(field, f"search_{field_name}_min", f"{field.label}_最小值", "number", min_value))
+                search_form.append(self.Object(field, f"search_{field_name}_max", f"{field.label}_最大值", "number", max_value))
             else:
                 search_form.append(obj)
         return search_form
@@ -121,14 +124,20 @@ class FormBtnSearch:
         for search in self.form():
             if search.type in ["date", "number"]:
                 div_class = "col-xs-3"
+                html_input = f"""
+                    <div class="{div_class}">
+                        <label style="margin-top: 10px">{search.label}</label>
+                        <input type="{search.type}" name="{search.name}" class="form-control" placeholder="{search.type}" value="{search.value}">
+                    </div>
+                """
             else:
                 div_class = "col-xs-6"
-            html_input = f"""
-                <div class="{div_class}">
-                    <label style="margin-top: 10px">{search.label}</label>
-                    <input type="{search.type}" name="{search.name}" class="form-control" placeholder="{search.type}" value="{search.value}">
-                </div>
-            """
+                html_input = f"""
+                    <div class="{div_class}">
+                        <label style="margin-top: 10px">{search.label}</label>
+                        {search.field.widget.render(search.name, search.value)}
+                    </div>
+                """
             page_str_list.append(html_input)
 
         html_string_end = """

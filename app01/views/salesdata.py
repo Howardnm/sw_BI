@@ -131,27 +131,11 @@ def salesdata_addform(request):
     for idx, row in enumerate(sheet.iter_rows(min_row=2), start=2):
         date_dict = {
             'date': row[0].value,
-            'order_number': row[1].value,
-            'client_company': row[2].value,
-            'k3': row[4].value,
-            'product_name': row[5].value,
-            'product_specification': row[6].value,
-            'sales_volume': row[8].value,
-            'department': row[10].value,
-            'salesperson': row[11].value,
-            'gross_unit_price': row[12].value,
-            # 销售金额（元）= 实发数量 * 销售单价(元/Kg）
-            'net_unit_price': row[14].value,
+            'k3': row[1].value,
+            'sales_volume': row[2].value,
+            'net_unit_price': row[3].value,
             # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
-            'actual_client_company': row[16].value,
-            'supply_company': row[18].value,
-            'intra_group_or_external_sales': row[19].value,
-            'product_domain_groups': row[21].value,
-            'business_trade_categories': row[22].value,
-            'new_and_returning_customers': row[23].value,
-            'product_category': row[30].value,
-            'core_product': row[31].value,
-            'order_type': row[32].value,
+            'client_company': row[4].value,
         }
         # 必填字段校验
         try:

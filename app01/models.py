@@ -117,13 +117,34 @@ class Salesperson(models.Model):
         return self.name
 
 
-class Performance(models.Model):
+class SalesIndicator(models.Model):
     """ 个人业绩状况 """
     name = models.ForeignKey(verbose_name="成员", to="Salesperson", to_field="id", on_delete=models.CASCADE)
-    month = models.DateField(verbose_name="月份")
-    target_sales_volume = models.IntegerField(verbose_name="当月销售量任务指标(Kg)", default=0)
-    target_sales_revenue = models.IntegerField(verbose_name="当月销售额任务指标(元)", default=0)
-    target_sales_profit = models.IntegerField(verbose_name="当月销售利润任务指标(元)", default=0)
+    year = models.IntegerField(verbose_name="年份")
+    target_sales_volume_1 = models.IntegerField(verbose_name="1月销量指标(Kg)", default=0)
+    target_sales_volume_2 = models.IntegerField(verbose_name="2月销量指标(Kg)", default=0)
+    target_sales_volume_3 = models.IntegerField(verbose_name="3月销量指标(Kg)", default=0)
+    target_sales_volume_4 = models.IntegerField(verbose_name="4月销量指标(Kg)", default=0)
+    target_sales_volume_5 = models.IntegerField(verbose_name="5月销量指标(Kg)", default=0)
+    target_sales_volume_6 = models.IntegerField(verbose_name="6月销量指标(Kg)", default=0)
+    target_sales_volume_7 = models.IntegerField(verbose_name="7月销量指标(Kg)", default=0)
+    target_sales_volume_8 = models.IntegerField(verbose_name="8月销量指标(Kg)", default=0)
+    target_sales_volume_9 = models.IntegerField(verbose_name="9月销量指标(Kg)", default=0)
+    target_sales_volume_10 = models.IntegerField(verbose_name="10月销量指标(Kg)", default=0)
+    target_sales_volume_11 = models.IntegerField(verbose_name="11月销量指标(Kg)", default=0)
+    target_sales_volume_12 = models.IntegerField(verbose_name="12月销量指标(Kg)", default=0)
+    target_sales_revenue_1 = models.IntegerField(verbose_name="1月销售额指标(元)", default=0)
+    target_sales_revenue_2 = models.IntegerField(verbose_name="2月销售额指标(元)", default=0)
+    target_sales_revenue_3 = models.IntegerField(verbose_name="3月销售额指标(元)", default=0)
+    target_sales_revenue_4 = models.IntegerField(verbose_name="4月销售额指标(元)", default=0)
+    target_sales_revenue_5 = models.IntegerField(verbose_name="5月销售额指标(元)", default=0)
+    target_sales_revenue_6 = models.IntegerField(verbose_name="6月销售额指标(元)", default=0)
+    target_sales_revenue_7 = models.IntegerField(verbose_name="7月销售额指标(元)", default=0)
+    target_sales_revenue_8 = models.IntegerField(verbose_name="8月销售额指标(元)", default=0)
+    target_sales_revenue_9 = models.IntegerField(verbose_name="9月销售额指标(元)", default=0)
+    target_sales_revenue_10 = models.IntegerField(verbose_name="10月销售额指标(元)", default=0)
+    target_sales_revenue_11 = models.IntegerField(verbose_name="11月销售额指标(元)", default=0)
+    target_sales_revenue_12 = models.IntegerField(verbose_name="12月销售额指标(元)", default=0)
 
     def __str__(self):
         return self.name
@@ -132,24 +153,8 @@ class Performance(models.Model):
 class SalesData(models.Model):
     """ 销售数据 """
     date = models.DateField(verbose_name="日期")
-    order_number = models.CharField(verbose_name="单据编号", max_length=64)
-    client_company = models.CharField(verbose_name="购货公司", max_length=64)
     k3 = models.CharField(verbose_name="K3", max_length=64)
-    product_name = models.CharField(verbose_name="产品名称", max_length=64)
-    product_specification = models.CharField(verbose_name="规格型号", max_length=64, null=True, blank=True)
     sales_volume = models.IntegerField(verbose_name="实发数量(Kg)")
-    department = models.CharField(verbose_name="部门", max_length=64)
-    salesperson = models.CharField(verbose_name="业务员", max_length=64)
-    gross_unit_price = models.DecimalField(verbose_name="销售单价(元/Kg)", max_digits=27, decimal_places=14, default=0)  # 整数位13(16-3)，小数位3
-    # 销售金额（元）= 实发数量 * 销售单价(元/Kg）
     net_unit_price = models.DecimalField(verbose_name="不含税单价(元/Kg)", max_digits=27, decimal_places=14, default=0)  # 验证：销售单价(元/Kg）/ 1.13
     # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
-    actual_client_company = models.CharField(verbose_name="实际购货公司", max_length=64)
-    supply_company = models.CharField(verbose_name="供货基地", max_length=64)
-    intra_group_or_external_sales = models.CharField(verbose_name="内外销(内销、外销)", max_length=64)
-    product_domain_groups = models.CharField(verbose_name="产品分类(电子电气、家电、汽配、卫浴、内销、贸易)", max_length=64)
-    business_trade_categories = models.CharField(verbose_name="贸易类型组别", max_length=64, null=True, blank=True)
-    new_and_returning_customers = models.CharField(verbose_name="新老客户", max_length=64)
-    product_category = models.CharField(verbose_name="产品线", max_length=64, null=True, blank=True)  # 搞一个产品线列表，ForeignKey连接，或者用K3联动也行
-    core_product = models.CharField(verbose_name="主打产品", max_length=64, null=True, blank=True)  # 搞一个主打产品列表，ForeignKey连接
-    order_type = models.CharField(verbose_name="订单类别", max_length=64)  # 小批订单
+    client_company = models.CharField(verbose_name="实际购货公司", max_length=64)
