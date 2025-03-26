@@ -105,13 +105,13 @@ class SalesTeam(models.Model):
 
 class Salesperson(models.Model):
     """ 销售人员 """
-    name = models.CharField(verbose_name="销售人员姓名", max_length=64)
     team = models.ForeignKey(verbose_name="团队", to="SalesTeam", to_field="id", null=True, blank=True, on_delete=models.SET_NULL)
     status_choices = {
         (1, "组员"),
         (2, "经理"),
     }
     status = models.SmallIntegerField(verbose_name="级别", choices=status_choices, default=1)
+    name = models.CharField(verbose_name="销售人员姓名", max_length=64)
 
     def __str__(self):
         return self.name
@@ -148,6 +148,21 @@ class SalesIndicator(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SalesProduct(models.Model):
+    """ 客户产品数据 """
+    intra_or_external_sales = models.CharField(verbose_name="客户类型(内外销)", max_length=64)
+    supply_company = models.CharField(verbose_name="供货基地", max_length=64)
+    salesperson = models.CharField(verbose_name="业务员", max_length=64)
+    product_domain_groups = models.CharField(verbose_name="组别（电子电气、家电、汽配、卫浴、内销、原料销售、国内营销、国际营销、精密组件）", max_length=64)
+    initial_transaction_date = models.DateField(verbose_name="初始交易日期")
+    # 新旧项目：用"初始交易日期"，以今年1月1日为分界线来判断，
+    actual_client_company = models.CharField(verbose_name="客户全称", max_length=64)
+    k3 = models.CharField(verbose_name="K3", max_length=64)
+    product_name = models.CharField(verbose_name="材料名称", max_length=64)
+    product_category = models.CharField(verbose_name="产品线", max_length=64, null=True, blank=True)
+    core_product = models.CharField(verbose_name="主打产品", max_length=64, null=True, blank=True)
 
 
 class SalesData(models.Model):

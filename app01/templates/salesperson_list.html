@@ -5,11 +5,11 @@
         <div style="margin-bottom: 10px;">
             <a class="btn btn-primary" id="btnAddBar">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                添加销售信息
+                添加数据
             </a>
             <a class="btn btn-primary" id="btnUploadBar">
                 <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
-                导入销售信息
+                导入数据
             </a>
             <a class="btn btn-danger" id="btn-delete-all">
                 <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
@@ -23,32 +23,30 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                销售数据
+                销售人员
             </div>
             <div style="overflow-x: auto; white-space: nowrap;">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
+                        <th>ID</th>
+                        <th>团队</th>
+                        <th>级别</th>
+                        <th>销售人员姓名</th>
                         <th>操作</th>
-                        <th>日期</th>
-                        <th>k3</th>
-                        <th>实发数量(Kg)</th>
-                        <th>不含税单价(元/Kg)</th>
-                        <th>实际购货公司</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for obj in queryset %}
                         <tr uid="{{ obj.id }}">
+                            <th>{{ obj.id }}</th>
+                            <td>{{ obj.team }}</td>
+                            <td>{{ obj.get_status_display }}</td>
+                            <td>{{ obj.name }}</td>
                             <td>
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-edit" value="编辑">
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
                             </td>
-                            <td>{{ obj.date }}</td>
-                            <th>{{ obj.k3 }}</th>
-                            <th>{{ obj.sales_volume }}</th>
-                            <td>{{ obj.net_unit_price }}</td>
-                            <td>{{ obj.client_company }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -81,5 +79,3 @@
     {{ upload_js }}
 
 {% endblock %}
-
-

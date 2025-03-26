@@ -5,11 +5,11 @@
         <div style="margin-bottom: 10px;">
             <a class="btn btn-primary" id="btnAddBar">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                添加销售信息
+                添加数据
             </a>
             <a class="btn btn-primary" id="btnUploadBar">
                 <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
-                导入销售信息
+                导入数据
             </a>
             <a class="btn btn-danger" id="btn-delete-all">
                 <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>
@@ -23,18 +23,23 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                销售数据
+                客户产品信息
             </div>
             <div style="overflow-x: auto; white-space: nowrap;">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
                         <th>操作</th>
-                        <th>日期</th>
-                        <th>k3</th>
-                        <th>实发数量(Kg)</th>
-                        <th>不含税单价(元/Kg)</th>
-                        <th>实际购货公司</th>
+                        <th>客户类型(内外销)</th>
+                        <th>供货基地</th>
+                        <th>业务员</th>
+                        <th>组别</th>
+                        <th>初始交易日期</th>
+                        <th>客户全称</th>
+                        <th>K3</th>
+                        <th>材料名称</th>
+                        <th>产品线</th>
+                        <th>主打产品</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,11 +49,16 @@
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-edit" value="编辑">
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-danger btn-delete" value="删除">
                             </td>
-                            <td>{{ obj.date }}</td>
-                            <th>{{ obj.k3 }}</th>
-                            <th>{{ obj.sales_volume }}</th>
-                            <td>{{ obj.net_unit_price }}</td>
-                            <td>{{ obj.client_company }}</td>
+                            <td>{{ obj.intra_or_external_sales }}</td>
+                            <td>{{ obj.supply_company }}</td>
+                            <td>{{ obj.salesperson }}</td>
+                            <td>{{ obj.product_domain_groups }}</td>
+                            <td>{{ obj.initial_transaction_date }}</td>
+                            <td>{{ obj.actual_client_company }}</td>
+                            <td>{{ obj.k3 }}</td>
+                            <td>{{ obj.product_name }}</td>
+                            <td>{{ obj.product_category }}</td>
+                            <td>{{ obj.core_product }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -81,5 +91,3 @@
     {{ upload_js }}
 
 {% endblock %}
-
-

@@ -19,7 +19,7 @@ from django.urls import path, include
 
 # from app01 import views
 from app01.views import depart, user, pretty, admin, account, task, order, chart, upload, salesperson, salesteam, \
-    salesindicator, salesdata
+    salesindicator, salesdata, salesproduct
 
 urlpatterns = [
     # path('silk/', include('silk.urls', namespace='silk')),
@@ -44,7 +44,7 @@ urlpatterns = [
 
     # app02
     # 首页
-    path('', salesteam.sales_team_list),
+    path('', salesteam.list),
 
     # 登录
     path('login', account.login),
@@ -100,15 +100,19 @@ urlpatterns = [
     path('upload/list', upload.upload_list),
 
     # 销售团队
-    path('salesteam/list', salesteam.sales_team_list),
-    path('salesteam/add', salesteam.sales_team_add),
-    path('salesteam/<int:nid>/edit', salesteam.sales_team_edit),
-    path('salesteam/<int:nid>/delete', salesteam.sales_team_delete),
+    path('salesteam/list', salesteam.list),
+    path('salesteam/add', salesteam.add),
+    path('salesteam/edit', salesteam.edit),
+    path('salesteam/edit_detail', salesteam.edit_detail),
+    path('salesteam/delete', salesteam.delete),
+    path('salesteam/delete_all', salesteam.delete_all),
     # 销售人员
-    path('salesperson/list', salesperson.sales_person_list),
-    path('salesperson/add', salesperson.sales_person_add),
-    path('salesperson/<int:nid>/edit', salesperson.sales_person_edit),
-    path('salesperson/<int:nid>/delete', salesperson.sales_person_delete),
+    path('salesperson/list', salesperson.list),
+    path('salesperson/add', salesperson.add),
+    path('salesperson/edit', salesperson.edit),
+    path('salesperson/edit_detail', salesperson.edit_detail),
+    path('salesperson/delete', salesperson.delete),
+    path('salesperson/delete_all', salesperson.delete_all),
     # 个人业绩信息
     path('salesindicator/list', salesindicator.list),
     path('salesindicator/add', salesindicator.add),
@@ -116,6 +120,14 @@ urlpatterns = [
     path('salesindicator/edit_detail', salesindicator.edit_detail),
     path('salesindicator/delete', salesindicator.delete),
     path('salesindicator/delete_all', salesindicator.delete_all),
+    # 客户产品信息
+    path('salesproduct/list', salesproduct.list),
+    path('salesproduct/add', salesproduct.add),
+    path('salesproduct/edit', salesproduct.edit),
+    path('salesproduct/edit_detail', salesproduct.edit_detail),
+    path('salesproduct/delete', salesproduct.delete),
+    path('salesproduct/delete_all', salesproduct.delete_all),
+    path('salesproduct/addform', salesproduct.addform),
     # 销售大信息
     path('salesdata/list', salesdata.salesdata_list),
     path('salesdata/add', salesdata.salesdata_add),

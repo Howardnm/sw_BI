@@ -253,9 +253,14 @@ class SalesIndicatorModelForm(BootStrapModelForm):
         if name and year:
             exists: bool = models.SalesIndicator.objects.exclude(id=self.instance.pk).filter(name=name, year=year).exists()
             if exists:
-                self.add_error("name", "该人员已存在！")
                 self.add_error("year", "该年份已存在！")
         return cleaned_data
+
+
+class SalesProductModelForm(BootStrapModelForm):
+    class Meta:
+        model = models.SalesProduct
+        fields = "__all__"
 
 
 class SalesDataModelForm(BootStrapModelForm):
