@@ -150,6 +150,7 @@ class SalesIndicator(models.Model):
         return self.name
 
 
+# 供货基地，关联上k3
 class SalesProduct(models.Model):
     """ 客户产品数据 """
     intra_or_external_sales = models.CharField(verbose_name="客户类型(内外销)", max_length=64)
@@ -159,7 +160,7 @@ class SalesProduct(models.Model):
     initial_transaction_date = models.DateField(verbose_name="初始交易日期")
     # 新旧项目：用"初始交易日期"，以今年1月1日为分界线来判断，
     actual_client_company = models.CharField(verbose_name="客户全称", max_length=64)
-    k3 = models.CharField(verbose_name="K3", max_length=64)
+    k3 = models.CharField(verbose_name="K3", max_length=64)  # 修改
     product_name = models.CharField(verbose_name="材料名称", max_length=64)
     product_category = models.CharField(verbose_name="产品线", max_length=64, null=True, blank=True)
     core_product = models.CharField(verbose_name="主打产品", max_length=64, null=True, blank=True)

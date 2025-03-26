@@ -1,4 +1,6 @@
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count
+from collections import defaultdict
+
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count, OuterRef, Subquery
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
@@ -91,32 +93,59 @@ def data_supply_company():
     三基地每月销售量（kg）
     [{name: '广东基地', data: [3, 5, 1, 13]}, {name: '昆山基地', data: [14, 8, 8, 12]}, {name: '武汉基地', data: [0, 2, 6, 3]}]
     """
-    supply_company: list = (
-        models.SalesProduct.objects
-        .values("supply_company")
-        .distinct()  # 去重
-    )
-    print(supply_company)
+    sales_product_subquery = models.SalesProduct.objects.filter(
+        k3=OuterRef("k3")  # 让子查询匹配主查询的 k3
+    ).values("supply_company")[:1]  # 取匹配到的第一个 supply_company，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
+
+    # 生成：每个月每个k3的出货量
     queryset: list = (
         models.SalesData.objects
         .filter(date__year=time.strftime("%Y"))
+        .annotate(month=TruncMonth("date"))  # 新建月份字段（实际上就是把date的日都变为1号，然后新建个month字段来储存）
         .annotate(
-            revenue=ExpressionWrapper(
-                F("sales_volume") * F("net_unit_price"),
-                output_field=DecimalField()
-            )
+            supply_company=Subquery(sales_product_subquery),  # 用子查询获取 supply_company
         )
-        .annotate(month=TruncMonth("date"))
-        .values("month")
-        .annotate(Sum("revenue"))
+        .values("supply_company", "month")  # 只显示month, k3字段
+        .annotate(
+            sales_volume__sum=Sum("sales_volume"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
         .order_by("month")
     )
-    # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
-    dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
-    # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
-    formatted_sales = [round(float(dict1.get(month, 0)), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
-    # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    return formatted_sales
+    # <QuerySet [{'month': datetime.date(2025, 1, 1), 'supply_company': None, 'sales_volume__sum': 0}, {'month': datetime.date(2025, 1, 1), 'supply_company': '广东基地', 'sales_volume__sum': 3805459}, {'month': datetime.date(2025, 1, 1), 'supply_company': '昆山基地', 'sales_volume__sum': 1146300}, {'month': datetime.date(2025, 1, 1), 'supply_company': '武汉基地', 'sales_volume__sum': 929509}, {'month': datetime.date(2025, 2, 1), 'supply_company': '广东基地', 'sales_volume__sum': 462926}, {'month': datetime.date(2025, 2, 1), 'supply_company': '昆山基地', 'sales_volume__sum': 164045}, {'month': datetime.date(2025, 2, 1), 'supply_company': '武汉基地', 'sales_volume__sum': 102700}]>
+    print(queryset)
+
+    # 统计各个 supply_company 1-12 月的销售数据
+    company_monthly_sales = defaultdict(lambda: [0] * 12)
+
+    for item in queryset:
+        month_index = item['month'].month - 1  # 1 月 -> 索引 0, 2 月 -> 索引 1 ...
+        supply_company = item['supply_company'] or "未知基地"
+
+        company_monthly_sales[supply_company][month_index] += round(float(item['sales_volume__sum'] / 1000), 0)
+    print(company_monthly_sales)
+
+    list1 = []
+    for key, value in company_monthly_sales.items():
+        list1.append({
+            "name": key,
+            "data": value
+        })
+    print(list1)
+    """
+    [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
+    """
+    # 等价于：
+    lll = """
+    SELECT 
+    sd.k3, 
+    (SELECT sp.supply_company FROM sales_product sp WHERE sp.k3 = sd.k3 LIMIT 1) AS supply_company,
+    sd.sales_volume
+    FROM sales_data sd
+    WHERE YEAR(sd.date) = '2025';
+
+    """
+
+    return list1
 
 
 def chat_api1(request):
@@ -179,11 +208,11 @@ def chat_api2(request):
 
 
 def chat_api3(request):
-    d = data_supply_company()
+    list = data_supply_company()
     data_dict = {
         "status": True,
         "data": {
-
+            "series": list
         }
     }
     return JsonResponse(data_dict)

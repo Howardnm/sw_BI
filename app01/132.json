@@ -1,0 +1,51 @@
+[
+  {
+    'month': datetime.date(2025,
+    1,
+    1),
+    'supply_company': None,
+    'sales_volume__sum': 0
+  },
+  {
+    'month': datetime.date(2025,
+    1,
+    1),
+    'supply_company': '广东基地',
+    'sales_volume__sum': 3805459
+  },
+  {
+    'month': datetime.date(2025,
+    1,
+    1),
+    'supply_company': '昆山基地',
+    'sales_volume__sum': 1146300
+  },
+  {
+    'month': datetime.date(2025,
+    1,
+    1),
+    'supply_company': '武汉基地',
+    'sales_volume__sum': 929509
+  },
+  {
+    'month': datetime.date(2025,
+    2,
+    1),
+    'supply_company': '广东基地',
+    'sales_volume__sum': 462926
+  },
+  {
+    'month': datetime.date(2025,
+    2,
+    1),
+    'supply_company': '昆山基地',
+    'sales_volume__sum': 164045
+  },
+  {
+    'month': datetime.date(2025,
+    2,
+    1),
+    'supply_company': '武汉基地',
+    'sales_volume__sum': 102700
+  }
+]
