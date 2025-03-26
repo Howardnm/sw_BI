@@ -25,8 +25,7 @@ def list(request):
     edit_obj = FormBtnEdit(request, form, f"/{url_path}/edit_detail", f"/{url_path}/edit", "编辑数据")  # 编辑框组件对象
     del_obj = FormBtnDelete(f"/{url_path}/delete")  # 删除框组件对象
     del_all_obj = FormBtnDelAll(request, f"/{url_path}/delete_all", "请输入管理员密码")  # 一键删除框组件对象
-
-    upload_obj = FormBtnUpload(request, f"/{url_path}/addform", "/static/files/salesindicator_addform.xlsx", "导入销售信息", "选择规范化的excel文件进行导入")  # excel批量上传框组件对象
+    # upload_obj = FormBtnUpload(request, f"/{url_path}/addform", "/static/files/salesindicator_addform.xlsx", "导入销售信息", "选择规范化的excel文件进行导入")  # excel批量上传框组件对象
     context = {
         # 搜索框组件
         "search_Modal": search_bar.html_modal(),
@@ -44,8 +43,8 @@ def list(request):
         "delete_all_Modal": del_all_obj.html_modal(),
         "delete_all_js": del_all_obj.js(),
         # excel批量上传框组件
-        "upload_Modal": upload_obj.html_modal(),
-        "upload_js": upload_obj.js(),
+        # "upload_Modal": upload_obj.html_modal(),
+        # "upload_js": upload_obj.js(),
         # 翻页组件
         "queryset": page_obj.page_queryset,  # 分完页的数据
         "page_string": page_obj.html(),  # html页码

@@ -93,8 +93,10 @@ urlpatterns = [
 
     # 数据统计
     path('chart/list', chart.chart_list),
+    path('chart/list1', chart.chart_list1),
     path('chart/api/1', chart.chat_api1),
     path('chart/api/2', chart.chat_api2),
+    path('chart/api/3', chart.chat_api3),
 
     # 上传文件
     path('upload/list', upload.upload_list),
@@ -120,6 +122,7 @@ urlpatterns = [
     path('salesindicator/edit_detail', salesindicator.edit_detail),
     path('salesindicator/delete', salesindicator.delete),
     path('salesindicator/delete_all', salesindicator.delete_all),
+    path('salesindicator/addform', salesindicator.addform),
     # 客户产品信息
     path('salesproduct/list', salesproduct.list),
     path('salesproduct/add', salesproduct.add),

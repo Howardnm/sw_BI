@@ -1,4 +1,4 @@
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
@@ -18,6 +18,19 @@ def chart_list(request):
         "this_time": this_time,
     }
     return render(request, "chart.html", context)
+
+
+def chart_list1(request):
+    """ 数据统计页面 """
+    this_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    this_year = time.strftime("%Y")
+    this_month = time.strftime("%m").split("0")[-1]
+    context = {
+        "this_year": this_year,
+        "this_month": this_month,
+        "this_time": this_time,
+    }
+    return render(request, "chart1.html", context)
 
 
 def chart_list2(request):
@@ -69,6 +82,39 @@ def data_month_sales_revenue():
     dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
     # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
     formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
+    # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    return formatted_sales
+
+
+def data_supply_company():
+    """
+    三基地每月销售量（kg）
+    [{name: '广东基地', data: [3, 5, 1, 13]}, {name: '昆山基地', data: [14, 8, 8, 12]}, {name: '武汉基地', data: [0, 2, 6, 3]}]
+    """
+    supply_company: list = (
+        models.SalesProduct.objects
+        .values("supply_company")
+        .distinct()  # 去重
+    )
+    print(supply_company)
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .annotate(month=TruncMonth("date"))
+        .values("month")
+        .annotate(Sum("revenue"))
+        .order_by("month")
+    )
+    # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
+    dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
+    # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
+    formatted_sales = [round(float(dict1.get(month, 0)), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
     # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     return formatted_sales
 
@@ -127,6 +173,17 @@ def chat_api2(request):
                     "yAxis": 0,
                 },
             },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def chat_api3(request):
+    d = data_supply_company()
+    data_dict = {
+        "status": True,
+        "data": {
+
         }
     }
     return JsonResponse(data_dict)

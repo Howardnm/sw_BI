@@ -108,3 +108,74 @@ def delete_all(request):
         models.SalesIndicator.objects.all().delete()
         return JsonResponse({"status": True})
     return JsonResponse({"status": False, "error": "密码错误！"})
+
+
+def addform(request):
+    """ 批量上传（excel文件） """
+    from openpyxl import load_workbook
+    # 1.获取用户上传的文件对象
+    file_obj = request.FILES.get("upload_file")
+    if not file_obj:
+        return JsonResponse({"status": False, "error": "请上传文件"})
+
+    # 2.对象传递给openpyxl，又openpyxl读取文件的内容
+    try:
+        wb = load_workbook(file_obj)
+        sheet = wb.active  # 取第一个工作表
+    except Exception:
+        return JsonResponse({"status": False, "error": "Excel 解析失败"})
+
+    # 3.循环获取每一行数据
+    sales_data_list = []
+    error_list = []
+    for idx, row in enumerate(sheet.iter_rows(min_row=3), start=2):  # 从第3行开始，遍历索引从2开始
+        salesperson, created = models.Salesperson.objects.get_or_create(name=row[0].value)  # 支持自动创建不存在的 Salesperson
+        date_dict = {
+            'name': salesperson,  # 赋值实例
+            'year': row[1].value,
+            'target_sales_volume_1': row[2].value,
+            'target_sales_volume_2': row[3].value,
+            'target_sales_volume_3': row[4].value,
+            'target_sales_volume_4': row[5].value,
+            'target_sales_volume_5': row[6].value,
+            'target_sales_volume_6': row[7].value,
+            'target_sales_volume_7': row[8].value,
+            'target_sales_volume_8': row[9].value,
+            'target_sales_volume_9': row[10].value,
+            'target_sales_volume_10': row[11].value,
+            'target_sales_volume_11': row[12].value,
+            'target_sales_volume_12': row[13].value,
+            'target_sales_revenue_1': row[14].value,
+            'target_sales_revenue_2': row[15].value,
+            'target_sales_revenue_3': row[16].value,
+            'target_sales_revenue_4': row[17].value,
+            'target_sales_revenue_5': row[18].value,
+            'target_sales_revenue_6': row[19].value,
+            'target_sales_revenue_7': row[20].value,
+            'target_sales_revenue_8': row[21].value,
+            'target_sales_revenue_9': row[22].value,
+            'target_sales_revenue_10': row[23].value,
+            'target_sales_revenue_11': row[24].value,
+            'target_sales_revenue_12': row[25].value,
+        }
+
+        # 必填字段校验
+        try:
+            form = SalesIndicatorModelForm(date_dict)  # 用 ModelForm 进行校验
+            if form.is_valid():
+                sales_data_list.append(models.SalesIndicator(**date_dict))
+            else:
+                error_list.append(f"第 {idx} 行错误: {form.errors}")
+        except Exception as error:
+            error_list.append(f"第 {idx} 行错误: <ul><li>{error}(查看日期格式是否规范化，标准2025-01-20)</li></ul>")
+
+    # 如果有错误，返回错误信息
+    if error_list:
+        return JsonResponse({"status": False, "error": error_list})
+
+    try:
+        models.SalesIndicator.objects.bulk_create(sales_data_list)
+    except Exception as error:
+        print(error)
+        return JsonResponse({"status": False, "error": f"数据导入数据库失败: {str(error)}"})
+    return JsonResponse({"status": True})
