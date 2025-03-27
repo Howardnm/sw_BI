@@ -95,6 +95,83 @@
                 </p>
             </figure>
         </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat3"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat4"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat5"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat6"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat7"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat8"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat9"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat10"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat11"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat12"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat13"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
     </div>
 
 
@@ -104,11 +181,23 @@
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'plugins/highcharts-12.1.2/code/highcharts.js' %}"></script>
 <script src="{% static 'plugins/highcharts-12.1.2/code/modules/exporting.js' %}"></script>
+<script src="{% static 'plugins/highcharts-12.1.2/code/modules/export-data.js' %}"></script>
 <script>
     // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
     $(document).ready(function () {
         ajax_post("/chart/api/1", chart_column, "chat1");
         ajax_post("/chart/api/2", chart_column, "chat2");
+        ajax_post("/chart/api/3", chart_column1, "chat3");
+        ajax_post("/chart/api/4", chart_column2, "chat4");
+        ajax_post("/chart/api/5", chart_column3, "chat5");
+        ajax_post("/chart/api/6", chart_column4, "chat6");
+        ajax_post("/chart/api/7", chart_column5, "chat7");
+        ajax_post("/chart/api/8", chart_column6, "chat8");
+        ajax_post("/chart/api/9", chart_column7, "chat9");
+        ajax_post("/chart/api/10", chart_column8, "chat10");
+        ajax_post("/chart/api/11", chart_column9, "chat11");
+        ajax_post("/chart/api/12", chart_column10, "chat12");
+        ajax_post("/chart/api/13", chart_column11, "chat13");
     });
 
     function ajax_post(url, callback, idx) {
@@ -117,7 +206,7 @@
             method: "GET",
             dataType: "json",
             success: function (res) {
-                console.log(res)
+                // console.log(res)
                 callback(res, idx); // 确保数据加载完成后再执行 callback
             },
             error: function (xhr, status, error) {
@@ -173,6 +262,597 @@
                 yAxis: res.data.series.b.yAxis
             }]
         });
+    }
+
+    function chart_column1(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【各基地每月】总销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column2(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【各基地每月】原料-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column3(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【各基地每月】内销-销售量（除原料）',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column4(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【各基地每月】外销-销售量（除原料）',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column5(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【组别分类】内销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column6(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【组别分类】外销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column7(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【产品线】内销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column8(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【产品线】外销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column9(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【主打产品】内销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column10(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '【主打产品】外销-销售量',
+            },
+            xAxis: {
+                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '吨'
+                },
+                stackLabels: {
+                    enabled: true
+                },
+            },
+
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: res.data.series
+        });
+    }
+
+    function chart_column11(res, idx) {
+        Highcharts.setOptions({
+            chart: {
+                styledMode: true
+            }
+        });
+        const data = res.data.series;
+
+        Dashboards.board(idx, {
+            dataPool: {
+                connectors: [{
+                    id: 'Population',
+                    type: 'JSON',
+                    options: {
+                        columnNames: [
+                            'City', 'Population (mln)', 'Metro Area (km²)',
+                            'Highest Elevation (m)'
+                        ],
+                        firstRowAsNames: false,
+                        data
+                    }
+                }]
+            },
+            gui: {
+                layouts: [{
+                    rows: [{
+                        cells: [{
+                            id: 'dashboard-col-0'
+                        }, {
+                            id: 'dashboard-col-1'
+                        }, {
+                            id: 'dashboard-col-2'
+                        }]
+                    }, {
+                        cells: [{
+                            id: 'dashboard-col-3'
+                        }]
+                    }]
+                }]
+            },
+            components: [{
+                title: {
+                    text: 'Population'
+                },
+                sync: {
+                    extremes: true
+                },
+                connector: {
+                    id: 'Population',
+                    columnAssignment: [{
+                        seriesId: 'Population (mln)',
+                        data: ['City', 'Population (mln)']
+                    }]
+                },
+                renderTo: 'dashboard-col-0',
+                type: 'Highcharts',
+                chartOptions: {
+                    xAxis: {
+                        type: 'category',
+                        accessibility: {
+                            description: 'Cities'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'bar',
+                        zooming: {
+                            type: 'x'
+                        }
+                    },
+                    plotOptions: {
+                        series: {
+                            colorByPoint: true
+                        }
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        pointFormat: '<b>{point.y:.2f}</b> mln',
+                        stickOnContact: true
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    lang: {
+                        accessibility: {
+                            chartContainerLabel: 'Population, Highcharts interactive ' +
+                                'chart.'
+                        }
+                    },
+                    accessibility: {
+                        description: `The chart is displaying the Population of cities.
+                The values are introduced in millions.`
+                    }
+                }
+            },
+                {
+                    renderTo: 'dashboard-col-1',
+                    title: {
+                        text: 'Metropolitan Area'
+                    },
+                    sync: {
+                        extremes: true
+                    },
+                    connector: {
+                        id: 'Population',
+                        columnAssignment: [{
+                            seriesId: 'Metro Area (km²)',
+                            data: ['City', 'Metro Area (km²)']
+                        }]
+                    },
+                    type: 'Highcharts',
+                    chartOptions: {
+                        xAxis: {
+                            type: 'category',
+                            accessibility: {
+                                description: 'Cities'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            type: 'bar',
+                            zooming: {
+                                type: 'x'
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                colorByPoint: true
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '<b>{point.y}</b> km²',
+                            stickOnContact: true
+                        },
+                        title: {
+                            text: ''
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        lang: {
+                            accessibility: {
+                                chartContainerLabel: 'Metropolitan Area, Highcharts ' +
+                                    'interactive chart.'
+                            }
+                        },
+                        accessibility: {
+                            description: `The chart is displaying the Metropolitan area.
+                The values are introduced in square kilometers.`
+                        }
+                    }
+                },
+                {
+                    renderTo: 'dashboard-col-2',
+                    connector: {
+                        id: 'Population',
+                        columnAssignment: [{
+                            seriesId: 'Highest Elevation (m)',
+                            data: ['City', 'Highest Elevation (m)']
+                        }]
+                    },
+                    title: {
+                        text: 'Highest Elevation'
+                    },
+                    sync: {
+                        extremes: true
+                    },
+                    type: 'Highcharts',
+                    chartOptions: {
+                        xAxis: {
+                            type: 'category',
+                            accessibility: {
+                                description: 'Cities'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            type: 'bar',
+                            zooming: {
+                                type: 'x'
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                colorByPoint: true
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '<b>{point.y}</b> m',
+                            stickOnContact: true
+                        },
+                        title: {
+                            text: ''
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        lang: {
+                            accessibility: {
+                                chartContainerLabel: 'Highest Elevation, Highcharts ' +
+                                    'interactive chart.'
+                            }
+                        },
+                        accessibility: {
+                            description: `The chart is displaying the Highest Elevation of
+                    cities. The values are introduced in meters.`
+                        }
+                    }
+                },
+                {
+                    renderTo: 'dashboard-col-3',
+                    connector: {
+                        id: 'Population'
+                    },
+                    type: 'DataGrid',
+                    sync: {
+                        extremes: true
+                    },
+                    dataGridOptions: {
+                        credits: {
+                            enabled: false
+                        }
+                    }
+                }]
+        }, true);
+
     }
 
 </script>

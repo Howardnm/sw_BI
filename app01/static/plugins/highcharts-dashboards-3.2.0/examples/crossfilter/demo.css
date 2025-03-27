@@ -1,0 +1,43 @@
+@import url("https://code.highcharts.com/css/highcharts.css");
+@import url("../../code/css/datagrid.css");
+@import url("../../code/css/dashboards.css");
+
+h2 {
+    text-align: center;
+}
+
+.highcharts-datagrid-container {
+    height: 300px;
+}
+
+.navigator-container .highcharts-series-0,
+#csv {
+    display: none;
+}
+
+/* LARGE */
+@media (max-width: 1200px) {
+    #top-left,
+    #top-middle,
+    #top-right {
+        flex: 1 1 33.333%;
+    }
+}
+
+/* MEDIUM */
+@media (max-width: 992px) {
+    #top-left,
+    #top-middle,
+    #top-right {
+        flex: 1 1 100%;
+    }
+}
+
+/* SMALL */
+@media (max-width: 576px) {
+    #top-left,
+    #top-middle,
+    #top-right {
+        flex: 1 1 100%;
+    }
+}

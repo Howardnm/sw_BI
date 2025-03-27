@@ -174,3 +174,4 @@ class SalesData(models.Model):
     net_unit_price = models.DecimalField(verbose_name="不含税单价(元/Kg)", max_digits=27, decimal_places=14, default=0)  # 验证：销售单价(元/Kg）/ 1.13
     # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
     client_company = models.CharField(verbose_name="实际购货公司", max_length=64)
+    supply_company = models.CharField(verbose_name="供货基地", max_length=64)

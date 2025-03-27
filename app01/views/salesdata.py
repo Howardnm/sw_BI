@@ -136,6 +136,7 @@ def salesdata_addform(request):
             'net_unit_price': row[3].value,
             # 未税金额（元）= 实发数量 * 不含税单价（元/Kg）
             'client_company': row[4].value,
+            'supply_company': row[5].value,
         }
         # 必填字段校验
         try:

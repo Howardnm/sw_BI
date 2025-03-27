@@ -30,11 +30,9 @@
     <div class="row mt-4">
         <!-- 每月销售额趋势 -->
         <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat1"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
+            <div id="container"></div>
+            <p class="highcharts-description">
+            </p>
         </div>
     </div>
 
@@ -45,10 +43,15 @@
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'plugins/highcharts-12.1.2/code/highcharts.js' %}"></script>
 <script src="{% static 'plugins/highcharts-12.1.2/code/modules/exporting.js' %}"></script>
+<script src="{% static 'plugins/highcharts-12.1.2/code/modules/accessibility.js' %}"></script>
+<script src="{% static 'plugins/highcharts-12.1.2/code/modules/draggable-points.js' %}"></script>
+<script src="{% static 'plugins/highcharts-dashboards-3.2.0/code/datagrid.js' %}"></script>
+<script src="{% static 'plugins/highcharts-dashboards-3.2.0/code/dashboards.js' %}"></script>
+<script src="{% static 'plugins/highcharts-dashboards-3.2.0/code/modules/layout.js' %}"></script>
 <script>
     // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
     $(document).ready(function () {
-        ajax_post("/chart/api/3", chart_column, "chat1");
+        ajax_post("/chart/api/13", chart_column, "container");
     });
 
     function ajax_post(url, callback, idx) {
@@ -68,38 +71,276 @@
 
 
     function chart_column(res, idx) {
-        Highcharts.chart(idx, {
+        Highcharts.setOptions({
             chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Major trophies for some English teams',
-                align: 'left'
-            },
-            xAxis: {
-                categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Count trophies'
-                },
-                stackLabels: {
-                    enabled: true
-                }
-            },
+                styledMode: true
+            }
+        });
+        const data = [
+            ['Delhi', 31.18, 1484, 250],
+            ['Tokyo', 37.33, 2194, 2017],
+            ['Shanghai', 27.79, 14922, 118],
+            ['Sao Paulo', 22.23, 7946, 760],
+            ['Mexico City', 21.91, 1485, 3930],
+            ['Dhaka', 21.74, 2161, 32],
+            ['Cairo', 21.32, 2734, 23],
+            ['Beijing', 20.89, 12796, 2303],
+            ['Mumbai', 20.67, 4355, 14],
+            ['Osaka', 19.11, 225, 3],
+            ['Karachi', 16.45, 3530, 10],
+            ['Chongqing', 16.38, 5472, 2797],
+            ['Istanbul', 15.41, 5343, 537],
+            ['Buenos Aires', 15.25, 4758, 25],
+            ['Kolkata', 14.974, 1886, 9],
+            ['Kinshasa', 14.97, 9965, 240],
+            ['Lagos', 14.86, 2706, 41],
+            ['Manila', 14.16, 619, 108],
+            ['Tianjin', 13.79, 5609, 1078],
+            ['Guangzhou', 13.64, 19870, 21]
+        ];
 
-            tooltip: {shared: true},
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true
+        Dashboards.board('container', {
+            dataPool: {
+                connectors: [{
+                    id: 'Population',
+                    type: 'JSON',
+                    options: {
+                        columnNames: [
+                            'City', 'Population (mln)', 'Metro Area (km²)',
+                            'Highest Elevation (m)'
+                        ],
+                        firstRowAsNames: false,
+                        data
+                    }
+                }]
+            },
+            gui: {
+                layouts: [{
+                    rows: [{
+                        cells: [{
+                            id: 'dashboard-col-0'
+                        }, {
+                            id: 'dashboard-col-1'
+                        }, {
+                            id: 'dashboard-col-2'
+                        }]
+                    }, {
+                        cells: [{
+                            id: 'dashboard-col-3'
+                        }]
+                    }]
+                }]
+            },
+            components: [{
+                title: {
+                    text: 'Population'
+                },
+                sync: {
+                    extremes: true
+                },
+                connector: {
+                    id: 'Population',
+                    columnAssignment: [{
+                        seriesId: 'Population (mln)',
+                        data: ['City', 'Population (mln)']
+                    }]
+                },
+                renderTo: 'dashboard-col-0',
+                type: 'Highcharts',
+                chartOptions: {
+                    xAxis: {
+                        type: 'category',
+                        accessibility: {
+                            description: 'Cities'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'bar',
+                        zooming: {
+                            type: 'x'
+                        }
+                    },
+                    plotOptions: {
+                        series: {
+                            colorByPoint: true
+                        }
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        pointFormat: '<b>{point.y:.2f}</b> mln',
+                        stickOnContact: true
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    lang: {
+                        accessibility: {
+                            chartContainerLabel: 'Population, Highcharts interactive ' +
+                                'chart.'
+                        }
+                    },
+                    accessibility: {
+                        description: `The chart is displaying the Population of cities.
+                The values are introduced in millions.`
                     }
                 }
             },
-            series: res.data.series
-        });
+                {
+                    renderTo: 'dashboard-col-1',
+                    title: {
+                        text: 'Metropolitan Area'
+                    },
+                    sync: {
+                        extremes: true
+                    },
+                    connector: {
+                        id: 'Population',
+                        columnAssignment: [{
+                            seriesId: 'Metro Area (km²)',
+                            data: ['City', 'Metro Area (km²)']
+                        }]
+                    },
+                    type: 'Highcharts',
+                    chartOptions: {
+                        xAxis: {
+                            type: 'category',
+                            accessibility: {
+                                description: 'Cities'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            type: 'bar',
+                            zooming: {
+                                type: 'x'
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                colorByPoint: true
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '<b>{point.y}</b> km²',
+                            stickOnContact: true
+                        },
+                        title: {
+                            text: ''
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        lang: {
+                            accessibility: {
+                                chartContainerLabel: 'Metropolitan Area, Highcharts ' +
+                                    'interactive chart.'
+                            }
+                        },
+                        accessibility: {
+                            description: `The chart is displaying the Metropolitan area.
+                The values are introduced in square kilometers.`
+                        }
+                    }
+                },
+                {
+                    renderTo: 'dashboard-col-2',
+                    connector: {
+                        id: 'Population',
+                        columnAssignment: [{
+                            seriesId: 'Highest Elevation (m)',
+                            data: ['City', 'Highest Elevation (m)']
+                        }]
+                    },
+                    title: {
+                        text: 'Highest Elevation'
+                    },
+                    sync: {
+                        extremes: true
+                    },
+                    type: 'Highcharts',
+                    chartOptions: {
+                        xAxis: {
+                            type: 'category',
+                            accessibility: {
+                                description: 'Cities'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            type: 'bar',
+                            zooming: {
+                                type: 'x'
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                colorByPoint: true
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '<b>{point.y}</b> m',
+                            stickOnContact: true
+                        },
+                        title: {
+                            text: ''
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        lang: {
+                            accessibility: {
+                                chartContainerLabel: 'Highest Elevation, Highcharts ' +
+                                    'interactive chart.'
+                            }
+                        },
+                        accessibility: {
+                            description: `The chart is displaying the Highest Elevation of
+                    cities. The values are introduced in meters.`
+                        }
+                    }
+                },
+                {
+                    renderTo: 'dashboard-col-3',
+                    connector: {
+                        id: 'Population'
+                    },
+                    type: 'DataGrid',
+                    sync: {
+                        extremes: true
+                    },
+                    dataGridOptions: {
+                        credits: {
+                            enabled: false
+                        }
+                    }
+                }]
+        }, true);
+
+
     }
 
 </script>

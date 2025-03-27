@@ -35,6 +35,7 @@
                         <th>实发数量(Kg)</th>
                         <th>不含税单价(元/Kg)</th>
                         <th>实际购货公司</th>
+                        <th>供货基地</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,6 +50,7 @@
                             <th>{{ obj.sales_volume }}</th>
                             <td>{{ obj.net_unit_price }}</td>
                             <td>{{ obj.client_company }}</td>
+                            <td>{{ obj.supply_company }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

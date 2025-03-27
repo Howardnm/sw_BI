@@ -97,6 +97,16 @@ urlpatterns = [
     path('chart/api/1', chart.chat_api1),
     path('chart/api/2', chart.chat_api2),
     path('chart/api/3', chart.chat_api3),
+    path('chart/api/4', chart.chat_api4),
+    path('chart/api/5', chart.chat_api5),
+    path('chart/api/6', chart.chat_api6),
+    path('chart/api/7', chart.chat_api7),
+    path('chart/api/8', chart.chat_api8),
+    path('chart/api/9', chart.chat_api9),
+    path('chart/api/10', chart.chat_api10),
+    path('chart/api/11', chart.chat_api11),
+    path('chart/api/12', chart.chat_api12),
+    path('chart/api/13', chart.chat_api13),
 
     # 上传文件
     path('upload/list', upload.upload_list),
