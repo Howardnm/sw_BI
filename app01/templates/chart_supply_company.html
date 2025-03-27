@@ -20,173 +20,83 @@
         .card-small .card-text {
             font-size: 1rem;
         }
+
+        .container-fluid {
+            transform: scale(1);
+            transform-origin: top left; /* 控制缩放基点 */
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid">
     <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list" role="button">返回系统</a>
     <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} 销售业绩及数据</h4>
-    <!-- 数据总览 -->
-    <div class="row text-center">
-        <div class="col-sm-2">
-            <div class="card card-small bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">总销售额</h5>
-                    <p class="card-text" id="total-sales">$1,200,000</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-small bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">本月增长</h5>
-                    <p class="card-text">+15%</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-small bg-warning text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">活跃业务员</h5>
-                    <p class="card-text">45</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-small bg-danger text-white">
-                <div class="card-body">
-                    <h5 class="card-title">本月目标完成率</h5>
-                    <p class="card-text">80%</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-small bg-info bg-opacity-75 text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">新客户</h5>
-                    <p class="card-text">120</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="card card-small bg-secondary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">退货率</h5>
-                    <p class="card-text">2%</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 业务员业绩排行 -->
     <div class="row mt-4">
-        <!-- 每月销售额趋势 -->
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat1"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat2"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
         <!-- 三基地每月销售量（吨） -->
-        <div class="col-md-6">
+        <div class="col-md-3">
             <figure class="highcharts-figure">
                 <div id="chat3"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <!-- 三基地每月销售额（万元） -->
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat_revenue1"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
         <!-- 三基地每月原料销售量（吨） -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <figure class="highcharts-figure">
                 <div id="chat4"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <figure class="highcharts-figure">
                 <div id="chat5"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <figure class="highcharts-figure">
                 <div id="chat6"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <!-- 分组销售量（吨） -->
-        <div class="col-md-6">
+        <!-- 三基地每月销售额（万元） -->
+        <div class="col-md-3">
             <figure class="highcharts-figure">
-                <div id="chat7"></div>
+                <div id="chat_revenue1"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
+        <!-- 三基地每月原料销售额（万元） -->
+        <div class="col-md-3">
             <figure class="highcharts-figure">
-                <div id="chat8"></div>
+                <div id="chat_revenue2"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
+        <!-- 三基地每月内销销售额（万元） -->
+        <div class="col-md-3">
             <figure class="highcharts-figure">
-                <div id="chat9"></div>
+                <div id="chat_revenue3"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
+        <!-- 三基地每月外销销售额（万元） -->
+        <div class="col-md-3">
             <figure class="highcharts-figure">
-                <div id="chat10"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat11"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat12"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat13"></div>
+                <div id="chat_revenue4"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
     </div>
-
-
 </div>
+
 
 <script src="{% static 'plugins/bootstrap-5.3.3-dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
@@ -196,20 +106,15 @@
 <script>
     // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
     $(document).ready(function () {
-        ajax_post("/chart/api/1", chart_column, "chat1");
-        ajax_post("/chart/api/2", chart_column, "chat2");
         ajax_post("/chart/api/3", chart_column_volume, "chat3");
         ajax_post("/chart/api/4", chart_column_volume, "chat4");
         ajax_post("/chart/api/5", chart_column_volume, "chat5");
         ajax_post("/chart/api/6", chart_column_volume, "chat6");
-        ajax_post("/chart/api/7", chart_column_volume, "chat7");
-        ajax_post("/chart/api/8", chart_column_volume, "chat8");
-        ajax_post("/chart/api/9", chart_column_volume, "chat9");
-        ajax_post("/chart/api/10", chart_column_volume, "chat10");
-        ajax_post("/chart/api/11", chart_column_volume, "chat11");
-        ajax_post("/chart/api/12", chart_column_volume, "chat12");
 
         ajax_post("/chart/api_1/1", chart_column_revenue, "chat_revenue1");
+        ajax_post("/chart/api_1/2", chart_column_revenue, "chat_revenue2");
+        ajax_post("/chart/api_1/3", chart_column_revenue, "chat_revenue3");
+        ajax_post("/chart/api_1/4", chart_column_revenue, "chat_revenue4");
     });
 
     function ajax_post(url, callback, idx) {

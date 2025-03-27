@@ -36,7 +36,7 @@ def chart_list1(request):
 
 
 def chart_list2(request):
-    return render(request, "chart.html")
+    return render(request, "chart_supply_company.html")
 
 
 def data_month_sales_volume():
@@ -88,7 +88,7 @@ def data_month_sales_revenue():
     return formatted_sales
 
 
-def data_supply_company():
+def data_supply_company_sales_volume():
     """
     三基地每月销售量（吨）
     [{name: '广东基地', data: [3, 5, 1, 13]}, {name: '昆山基地', data: [14, 8, 8, 12]}, {name: '武汉基地', data: [0, 2, 6, 3]}]
@@ -139,7 +139,46 @@ def data_supply_company():
     return list1
 
 
-def data_supply_company_raw_material():
+def data_supply_company_sales_revenue():
+    """
+    三基地每月销售额（万元）
+    [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    """
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .annotate(month=TruncMonth("date"))
+        .values("supply_company", "month")  # 只显示month, k3字段
+        .annotate(revenue__sum=Sum("revenue"))
+        .order_by("month")
+    )
+    # 统计各个 supply_company 1-12 月的销售额
+    company_monthly_sales = defaultdict(lambda: [0] * 12)
+    for item in queryset:
+        month_index = item['month'].month - 1  # 1 月 -> 索引 0, 2 月 -> 索引 1 ...
+        supply_company = item['supply_company'] or "未知基地"
+        company_monthly_sales[supply_company][month_index] += round(float(item['revenue__sum'] / 10000), 1)  # 万元
+
+    list1 = []
+    for key, value in company_monthly_sales.items():
+        list1.append({
+            "name": key,
+            "data": value
+        })
+    # [{'name': '未知基地', 'data': [0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, {'name': '广东基地', 'data': [3805.0, 463.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, {'name': '昆山基地', 'data': [1146.0, 164.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, {'name': '武汉基地', 'data': [930.0, 103.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}]
+    """
+    [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
+    """
+    return list1
+
+
+def data_supply_company_raw_material_sales():
     """
     三基地每月原料销售量（吨）
     [{name: '广东基地', data: [3, 5, 1, 13]}, {name: '昆山基地', data: [14, 8, 8, 12]}, {name: '武汉基地', data: [0, 2, 6, 3]}]
@@ -183,6 +222,44 @@ def data_supply_company_raw_material():
     """
     [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
     """
+    return list1
+
+
+def data_supply_company_raw_material_sales_revenue():
+    sales_product_subquery = models.SalesProduct.objects.filter(
+        actual_client_company=OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        k3=OuterRef("k3")  # 让子查询匹配主查询的 k3
+    ).values("product_domain_groups")[:1]  # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
+
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            month=TruncMonth("date"),
+            product_domain_groups=Subquery(sales_product_subquery),  # 用子查询获取 product_domain_groups
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(product_domain_groups="原料销售")
+        .values("supply_company", "month")  # 只显示month, k3字段
+        .annotate(revenue__sum=Sum("revenue"))
+        .order_by("month")
+    )
+    # 统计各个 supply_company 1-12 月的销售额
+    company_monthly_sales = defaultdict(lambda: [0] * 12)
+    for item in queryset:
+        month_index = item['month'].month - 1  # 1 月 -> 索引 0, 2 月 -> 索引 1 ...
+        supply_company = item['supply_company'] or "未知基地"
+        company_monthly_sales[supply_company][month_index] += round(float(item['revenue__sum'] / 10000), 1)  # 万元
+
+    list1 = []
+    for key, value in company_monthly_sales.items():
+        list1.append({
+            "name": key,
+            "data": value
+        })
     return list1
 
 
@@ -241,6 +318,49 @@ def data_supply_company_intra_sales():
     return list1
 
 
+def data_supply_company_intra_sales_revenue():
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
+    # 子查询：获取内外销标识
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            month=TruncMonth("date"),
+            product_domain_groups=Subquery(sales_product_subquery),  # 用子查询获取 product_domain_groups
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(~Q(product_domain_groups="原料销售"), intra_or_external_sales="内销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("supply_company", "month")  # 只显示month, k3字段
+        .annotate(revenue__sum=Sum("revenue"))
+        .order_by("month")
+    )
+    # 统计各个 supply_company 1-12 月的销售额
+    company_monthly_sales = defaultdict(lambda: [0] * 12)
+    for item in queryset:
+        month_index = item['month'].month - 1  # 1 月 -> 索引 0, 2 月 -> 索引 1 ...
+        supply_company = item['supply_company'] or "未知基地"
+        company_monthly_sales[supply_company][month_index] += round(float(item['revenue__sum'] / 10000), 1)  # 万元
+
+    list1 = []
+    for key, value in company_monthly_sales.items():
+        list1.append({
+            "name": key,
+            "data": value
+        })
+    return list1
+
+
 def data_supply_company_external_sales():
     """
     三基地每月外销，销售量（吨）
@@ -293,6 +413,49 @@ def data_supply_company_external_sales():
     """
     [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
     """
+    return list1
+
+
+def data_supply_company_external_sales_revenue():
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
+    # 子查询：获取内外销标识
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            month=TruncMonth("date"),
+            product_domain_groups=Subquery(sales_product_subquery),  # 用子查询获取 product_domain_groups
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(~Q(product_domain_groups="原料销售"), intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("supply_company", "month")  # 只显示month, k3字段
+        .annotate(revenue__sum=Sum("revenue"))
+        .order_by("month")
+    )
+    # 统计各个 supply_company 1-12 月的销售额
+    company_monthly_sales = defaultdict(lambda: [0] * 12)
+    for item in queryset:
+        month_index = item['month'].month - 1  # 1 月 -> 索引 0, 2 月 -> 索引 1 ...
+        supply_company = item['supply_company'] or "未知基地"
+        company_monthly_sales[supply_company][month_index] += round(float(item['revenue__sum'] / 10000), 1)  # 万元
+
+    list1 = []
+    for key, value in company_monthly_sales.items():
+        list1.append({
+            "name": key,
+            "data": value
+        })
     return list1
 
 
@@ -660,17 +823,13 @@ def data_actual_client_company_intra_sales():
         data1.append(key)
         data1.extend(value)
         list1.append(data1)
-    """
-    [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
-    """
-    print(list1)
+
     import pandas as pd
     # 创建 DataFrame 并转置
     df = pd.DataFrame(list1[1:], columns=list1[0]).set_index('客户').T
 
     # 转为列表嵌套列表（含列名）
     result = [df.columns.tolist()] + df.values.tolist()
-    print(result)
     return result
 
 
@@ -734,10 +893,11 @@ def chat_api2(request):
 
 
 def chat_api3(request):
-    list = data_supply_company()
+    list = data_supply_company_sales_volume()
     data_dict = {
         "status": True,
         "data": {
+            "title": '【各基地每月】总销售量',
             "series": list
         }
     }
@@ -745,10 +905,11 @@ def chat_api3(request):
 
 
 def chat_api4(request):
-    list = data_supply_company_raw_material()
+    list = data_supply_company_raw_material_sales()
     data_dict = {
         "status": True,
         "data": {
+            "title": '【各基地每月】原料-销售量',
             "series": list
         }
     }
@@ -760,6 +921,7 @@ def chat_api5(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【各基地每月】内销-销售量（除原料）',
             "series": list
         }
     }
@@ -771,6 +933,7 @@ def chat_api6(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【各基地每月】外销-销售量（除原料）',
             "series": list
         }
     }
@@ -782,6 +945,7 @@ def chat_api7(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【组别分类】内销-销售量',
             "series": list
         }
     }
@@ -793,6 +957,7 @@ def chat_api8(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【组别分类】外销-销售量',
             "series": list
         }
     }
@@ -804,6 +969,7 @@ def chat_api9(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【产品线】内销-销售量',
             "series": list
         }
     }
@@ -815,6 +981,7 @@ def chat_api10(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【产品线】外销-销售量',
             "series": list
         }
     }
@@ -826,6 +993,7 @@ def chat_api11(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【主打产品】内销-销售量',
             "series": list
         }
     }
@@ -837,6 +1005,7 @@ def chat_api12(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '【主打产品】外销-销售量',
             "series": list
         }
     }
@@ -848,6 +1017,55 @@ def chat_api13(request):
     data_dict = {
         "status": True,
         "data": {
+            "title": '',
+            "series": list
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_revenue_1(request):
+    list = data_supply_company_sales_revenue()
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": '【各基地每月】总销售额',
+            "series": list
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_revenue_2(request):
+    list = data_supply_company_raw_material_sales_revenue()
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": '【各基地每月】原料-销售额',
+            "series": list
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_revenue_3(request):
+    list = data_supply_company_intra_sales_revenue()
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": '【各基地每月】内销-销售额（除原料）',
+            "series": list
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_revenue_4(request):
+    list = data_supply_company_external_sales_revenue()
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": '【各基地每月】外销-销售额（除原料）',
             "series": list
         }
     }

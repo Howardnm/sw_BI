@@ -94,6 +94,9 @@ urlpatterns = [
     # 数据统计
     path('chart/list', chart.chart_list),
     path('chart/list1', chart.chart_list1),
+    path('chart/list2', chart.chart_list2),
+
+    # api销售量
     path('chart/api/1', chart.chat_api1),
     path('chart/api/2', chart.chat_api2),
     path('chart/api/3', chart.chat_api3),
@@ -107,6 +110,11 @@ urlpatterns = [
     path('chart/api/11', chart.chat_api11),
     path('chart/api/12', chart.chat_api12),
     path('chart/api/13', chart.chat_api13),
+    # api销售额
+    path('chart/api_1/1', chart.api_revenue_1),
+    path('chart/api_1/2', chart.api_revenue_2),
+    path('chart/api_1/3', chart.api_revenue_3),
+    path('chart/api_1/4', chart.api_revenue_4),
 
     # 上传文件
     path('upload/list', upload.upload_list),
