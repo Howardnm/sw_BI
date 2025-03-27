@@ -654,7 +654,7 @@ def data_actual_client_company_intra_sales():
         company_monthly_sales[actual_client_company][month_index] += round(float(item['sales_volume__sum'] / 1000), 1)
     # defaultdict(<function data_supply_company.<locals>.<lambda> at 0x000002DB74F8C4C0>, {'未知基地': [0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], '广东基地': [3805.0, 463.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], '昆山基地': [1146.0, 164.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], '武汉基地': [930.0, 103.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
-    list1 = []
+    list1 = [['客户', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], ]
     for key, value in company_monthly_sales.items():
         data1 = []
         data1.append(key)
@@ -664,7 +664,14 @@ def data_actual_client_company_intra_sales():
     [{name: 'Road', data: [434, 290, 307]}, {name: 'Rail', data: [272, 153, 156]}, {name: 'Air', data: [13, 7, 8]}, {name: 'Sea',data: [55, 35, 41]}]
     """
     print(list1)
-    return list1
+    import pandas as pd
+    # 创建 DataFrame 并转置
+    df = pd.DataFrame(list1[1:], columns=list1[0]).set_index('客户').T
+
+    # 转为列表嵌套列表（含列名）
+    result = [df.columns.tolist()] + df.values.tolist()
+    print(result)
+    return result
 
 
 def chat_api1(request):
