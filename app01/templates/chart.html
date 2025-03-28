@@ -31,40 +31,40 @@
         <div class="col-sm-2">
             <div class="card card-small bg-primary text-white">
                 <div class="card-body">
-                    <h5 class="card-title">总销售额</h5>
-                    <p class="card-text" id="total-sales">$1,200,000</p>
+                    <h5 class="card-title">全年总销售量</h5>
+                    <p class="card-text" id="total-num-1">0 吨</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-success text-white">
                 <div class="card-body">
-                    <h5 class="card-title">本月增长</h5>
-                    <p class="card-text">+15%</p>
+                    <h5 class="card-title">全年总销售额</h5>
+                    <p class="card-text" id="total-num-2">0 万元</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-warning text-dark">
                 <div class="card-body">
-                    <h5 class="card-title">活跃业务员</h5>
-                    <p class="card-text">45</p>
+                    <h5 class="card-title">当月累计销售量目标完成率</h5>
+                    <p class="card-text" id="total-num-3">000 %</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-danger text-white">
                 <div class="card-body">
-                    <h5 class="card-title">本月目标完成率</h5>
-                    <p class="card-text">80%</p>
+                    <h5 class="card-title">当月累计销售额目标完成率</h5>
+                    <p class="card-text" id="total-num-4">0%</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-info bg-opacity-75 text-dark">
                 <div class="card-body">
-                    <h5 class="card-title">新客户</h5>
-                    <p class="card-text">120</p>
+                    <h5 class="card-title">今年新客户</h5>
+                    <p class="card-text" id="total-num-5">000</p>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
             <div class="card card-small bg-secondary text-white">
                 <div class="card-body">
                     <h5 class="card-title">退货率</h5>
-                    <p class="card-text">2%</p>
+                    <p class="card-text" id="total-num-6">000%</p>
                 </div>
             </div>
         </div>
@@ -196,6 +196,10 @@
 <script>
     // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
     $(document).ready(function () {
+        ajax_post("/chart/api/api_year_year_sales_volume", num_year_sales_volume, "total-num-1");
+        ajax_post("/chart/api/api_year_sales_revenue", num_year_sales_revenue, "total-num-2");
+        ajax_post("/chart/api/api_year_new_client_company", num_new_client_company, "total-num-5");
+
         ajax_post("/chart/api/1", chart_column, "chat1");
         ajax_post("/chart/api/2", chart_column, "chat2");
         ajax_post("/chart/api/3", chart_column_volume, "chat3");
@@ -346,6 +350,17 @@
         });
     }
 
+    function num_year_sales_volume(res, idx) {
+        $("#" + idx).html(res.data + " 吨");
+    }
+
+    function num_year_sales_revenue(res, idx) {
+        $("#" + idx).html(res.data + " 万元");
+    }
+
+    function num_new_client_company(res, idx) {
+        $("#" + idx).html(res.data);
+    }
 </script>
 </body>
 </html>

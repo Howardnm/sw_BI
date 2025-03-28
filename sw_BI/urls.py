@@ -115,6 +115,10 @@ urlpatterns = [
     path('chart/api_1/2', chart.api_revenue_2),
     path('chart/api_1/3', chart.api_revenue_3),
     path('chart/api_1/4', chart.api_revenue_4),
+    # api全年总数
+    path('chart/api/api_year_year_sales_volume', chart.api_year_year_sales_volume),
+    path('chart/api/api_year_sales_revenue', chart.api_year_sales_revenue),
+    path('chart/api/api_year_new_client_company', chart.api_year_new_client_company),
 
     # 上传文件
     path('upload/list', upload.upload_list),

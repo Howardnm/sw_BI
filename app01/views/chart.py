@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count, OuterRef, Subquery, Q
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count, OuterRef, Subquery, Q, Max, Min
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
@@ -37,6 +37,43 @@ def chart_list1(request):
 
 def chart_list2(request):
     return render(request, "chart_supply_company.html")
+
+
+def data_year_sales_volume():
+    monthly_sales_volume = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))  # 只筛选当前年的数据
+        .aggregate(Sum("sales_volume"))
+    )
+    data_num = round(float(monthly_sales_volume["sales_volume__sum"] / 1000), 2)  # KG变吨后，银行模式的四舍五入到整数
+    return data_num
+
+
+def data_year_sales_revenue():
+    dict = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))  # 只筛选当前年的数据
+        .annotate(
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .aggregate(total=Sum("revenue"))
+    )
+    data_num = round(float(dict["total"] / 10000), 2)  # 万元
+    return data_num
+
+
+def data_year_new_client_company():
+    data_num = (
+        models.SalesProduct.objects
+        .values("actual_client_company")  # 用客户全称作为分组
+        .annotate(Min("initial_transaction_date"))  # 保留最小日期
+        .filter(initial_transaction_date__min__year=time.strftime("%Y"))  # 只筛选当前年的数据
+    ).count()
+    data_num = round(float(data_num), 0)  # 数量
+    return data_num
 
 
 def data_month_sales_volume():
@@ -1068,5 +1105,32 @@ def api_revenue_4(request):
             "title": '【各基地每月】外销-销售额（除原料）',
             "series": list
         }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_year_year_sales_volume(request):
+    data_num = data_year_sales_volume()
+    data_dict = {
+        "status": True,
+        "data": data_num
+    }
+    return JsonResponse(data_dict)
+
+
+def api_year_sales_revenue(request):
+    data_num = data_year_sales_revenue()
+    data_dict = {
+        "status": True,
+        "data": data_num
+    }
+    return JsonResponse(data_dict)
+
+
+def api_year_new_client_company(request):
+    data_num = data_year_new_client_company()
+    data_dict = {
+        "status": True,
+        "data": data_num
     }
     return JsonResponse(data_dict)
