@@ -24,7 +24,8 @@
 </head>
 <body>
 <div class="container-fluid">
-    <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list" role="button">返回系统</a>
+    <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list"
+       role="button">返回系统</a>
     <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} 销售业绩及数据</h4>
     <!-- 数据总览 -->
     <div class="row text-center">
@@ -47,23 +48,23 @@
         <div class="col-sm-2">
             <div class="card card-small bg-warning text-dark">
                 <div class="card-body">
-                    <h5 class="card-title">当月累计销售量目标完成率</h5>
-                    <p class="card-text" id="total-num-3">000 %</p>
+                    <h5 class="card-title">1-{{ this_month }}月累计销售量指标</h5>
+                    <p class="card-text" id="total-num-3">达成率：000 %</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-danger text-white">
                 <div class="card-body">
-                    <h5 class="card-title">当月累计销售额目标完成率</h5>
-                    <p class="card-text" id="total-num-4">0%</p>
+                    <h5 class="card-title">1-{{ this_month }}月累计销售额指标</h5>
+                    <p class="card-text" id="total-num-4">达成率：0%</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="card card-small bg-info bg-opacity-75 text-dark">
                 <div class="card-body">
-                    <h5 class="card-title">今年新客户</h5>
+                    <h5 class="card-title">{{ this_year }}年新客户</h5>
                     <p class="card-text" id="total-num-5">000</p>
                 </div>
             </div>
@@ -133,52 +134,50 @@
                 </p>
             </figure>
         </div>
-        <!-- 分组销售量（吨） -->
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat7"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
+        <!-- 【组别分类】外销-销售量  -->
+        <div class="col-md-4">
             <figure class="highcharts-figure">
                 <div id="chat8"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat9"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
+        <!--【产品线】外销-销售量 -->
+        <div class="col-md-4">
             <figure class="highcharts-figure">
                 <div id="chat10"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat11"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-6">
+        <!--【主打产品】外销-销售量 -->
+        <div class="col-md-4">
             <figure class="highcharts-figure">
                 <div id="chat12"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
-        <div class="col-md-6">
+        <!--【组别分类】内销-销售量 -->
+        <div class="col-md-4">
             <figure class="highcharts-figure">
-                <div id="chat13"></div>
+                <div id="chat7"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 【产品线】内销-销售量 -->
+        <div class="col-md-4">
+            <figure class="highcharts-figure">
+                <div id="chat9"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 【主打产品】内销-销售量 -->
+        <div class="col-md-4">
+            <figure class="highcharts-figure">
+                <div id="chat11"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
