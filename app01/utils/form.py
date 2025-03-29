@@ -253,7 +253,7 @@ class SalesIndicatorModelForm(BootStrapModelForm):
         if name and year:
             exists: bool = models.SalesIndicator.objects.exclude(id=self.instance.pk).filter(name=name, year=year).exists()
             if exists:
-                self.add_error("year", "该年份已存在！")
+                self.add_error("year", f"{name}, {year}年份数据已存在！若需更新数据，请删除该数据，然后重新导入！")
         return cleaned_data
 
 
