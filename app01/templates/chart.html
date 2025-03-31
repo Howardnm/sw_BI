@@ -256,49 +256,49 @@
                 {
                     name: res.data.series.a.name,
                     type: 'column',
-                    color: 'rgba(248,161,63,1)',
+                    color: 'rgba(249, 237, 105,.9)',
                     data: res.data.series.a.data,
                     // dataLabels: {enabled: true},
                     tooltip: {
                         valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
                         valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
                     },
-                    pointPadding: 0.1, // 柱子宽度
+                    pointPadding: 0.05, // 柱子宽度
                     pointPlacement: 0, // 左右偏移量
                     yAxis: res.data.series.a.yAxis
                 },
                 {
                     name: res.data.series.b.name,
                     type: 'column',
-                    color: 'rgba(186,60,61,.9)',
+                    color: 'rgba(255,132,31,0.9)',
                     data: res.data.series.b.data,
                     dataLabels: {enabled: true},
                     tooltip: {
                         valuePrefix: res.data.series.b.valuePrefix,
                         valueSuffix: res.data.series.b.valueSuffix,
                     },
-                    pointPadding: 0.3,
+                    pointPadding: 0.2,
                     pointPlacement: 0,
                     yAxis: res.data.series.b.yAxis
                 },
                 {
                     name: res.data.series.c.name,
-                    type: 'spline',
-                    color: 'rgba(44, 175, 254,1)',
+                    type: 'column',
+                    color: 'rgba(186,60,61,.9)',
                     data: res.data.series.c.data,
                     dataLabels: {enabled: true},
                     tooltip: {
                         valuePrefix: res.data.series.c.valuePrefix,
                         valueSuffix: res.data.series.c.valueSuffix,
                     },
-                    pointPadding: 0.3,
+                    pointPadding: 0.32,
                     pointPlacement: 0,
                     yAxis: res.data.series.c.yAxis
                 },
                 {
                     name: res.data.series.d.name,
                     type: 'spline',
-                    color: 'rgba(84, 79, 197,9)',
+                    color: 'rgb(171,0,213,1)',
                     data: res.data.series.d.data,
                     dataLabels: {enabled: true},
                     tooltip: {
@@ -308,6 +308,73 @@
                     pointPadding: 0.3,
                     pointPlacement: 0,
                     yAxis: res.data.series.d.yAxis
+                },
+                {
+                    name: res.data.series.e.name,
+                    type: 'spline',
+                    color: 'rgb(10,176,0,1)',
+                    data: res.data.series.e.data,
+                    // dataLabels: {enabled: true},
+                    tooltip: {
+                        valuePrefix: res.data.series.e.valuePrefix,
+                        valueSuffix: res.data.series.e.valueSuffix,
+                    },
+                    pointPadding: 0.3,
+                    pointPlacement: 0,
+                    yAxis: res.data.series.e.yAxis
+                },
+                {
+                    name: res.data.series.f.name,
+                    type: 'spline',
+                    color: 'rgba(44, 175, 254,1)',
+                    data: res.data.series.f.data,
+                    dataLabels: {enabled: true},
+                    tooltip: {
+                        valuePrefix: res.data.series.f.valuePrefix,
+                        valueSuffix: res.data.series.f.valueSuffix,
+                    },
+                    pointPadding: 0.3,
+                    pointPlacement: 0,
+                    yAxis: res.data.series.f.yAxis
+                },
+            ]
+        });
+    }
+
+    function salesindicator_sales_sanking(res, idx) {
+        Highcharts.chart(idx, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: res.data.title,
+            },
+            xAxis: {
+                categories: res.data.xAxis,
+            },
+            yAxis: [
+                {min: 0, title: {text: res.data.yAxis.left}},
+                {title: {text: res.data.yAxis.right}, opposite: true}
+            ],
+            legend: {shadow: false, reversed: true},
+            tooltip: {shared: true},
+            plotOptions: {
+                column: {grouping: false, shadow: false, borderWidth: 0}
+            },
+            series: [
+                {
+                    name: res.data.series.a.name,
+                    type: 'column',
+                    color: 'rgba(249, 237, 105,.9)',
+                    data: res.data.series.a.data,
+                    // dataLabels: {enabled: true},
+                    tooltip: {
+                        valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
+                        valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
+                    },
+                    pointPadding: 0.05, // 柱子宽度
+                    pointPlacement: 0, // 左右偏移量
+                    yAxis: res.data.series.a.yAxis
                 },
             ]
         });
@@ -400,6 +467,8 @@
     function num_new_client_company(res, idx) {
         $("#" + idx).html(res.data);
     }
+
+
 </script>
 </body>
 </html>

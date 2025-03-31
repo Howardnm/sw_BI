@@ -181,6 +181,28 @@ def data_month_sales_volume_target():
     return monthly_sales_list
 
 
+def data_month_sales_volume_previous_year():
+    """
+    每月销售量（吨）
+    [23200, 0, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    """
+    # 等价于 "SELECT date AS month, sum(sales_volume) FROM SalesData GROUP BY month ORDER BY month"
+    monthly_sales_volume = (
+        models.SalesData.objects
+        .filter(date__year=str(int(time.strftime("%Y")) - 1))  # 只筛选当前年的数据
+        .annotate(month=TruncMonth("date"))  # 新建月份字段（实际上就是把date的日都变为1号，然后新建个month字段来储存）
+        .values("month")  # 只显示month字段
+        .annotate(Sum("sales_volume"))  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        .order_by("month")  # 按月份排序
+    )
+    # < QuerySet[{'month': datetime.date(2025, 1, 1), 'sales_volume__sum': 23200}, {'month': datetime.date(2025, 3, 1), 'sales_volume__sum': 5000}] >
+    sales_dict = {item["month"].month: item["sales_volume__sum"] for item in monthly_sales_volume}  # .month是取日期的月份
+    # {1: 23200, 3: 5000}
+    formatted_sales = [round(float(sales_dict.get(month, 0) / 1000), 2) for month in range(1, 13)]  # KG变吨后，银行模式的四舍五入到整数
+    # [23200, 0, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    return formatted_sales
+
+
 def data_month_sales_revenue():
     """
     每月销售额（万元）
@@ -243,6 +265,33 @@ def data_month_sales_revenue_target():
         monthly_sales_revenue_target["month_12"] or 0,
     ]
     return monthly_sales_list
+
+
+def data_month_sales_revenue_previous_year():
+    """
+    每月销售额（万元）
+    [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    """
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=str(int(time.strftime("%Y")) - 1))
+        .annotate(
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .annotate(month=TruncMonth("date"))
+        .values("month")
+        .annotate(Sum("revenue"))
+        .order_by("month")
+    )
+    # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
+    dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
+    # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
+    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
+    # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    return formatted_sales
 
 
 def data_supply_company_sales_volume():
@@ -990,20 +1039,59 @@ def data_actual_client_company_intra_sales():
     return result
 
 
+def data_SalesIndicator_team_sales_volume_sanking():
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("salesperson")  # 只显示month, k3字段
+        .annotate(
+            sales_volume__sum=Sum("sales_volume"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-sales_volume__sum")
+    )
+    return queryset
+
+
 def chat_api1(request):
     formatted_month_sales_volume = data_month_sales_volume()
     formatted_month_sales_volume_target = data_month_sales_volume_target()
+    formatted_month_sales_volume_previous_year = data_month_sales_volume_previous_year()
+
+    def cumulative(data):
+        """ 计算梯度月累计列表 """
+        data1 = []
+        sum1 = 0
+        for i in range(0, int(time.strftime("%m").split("0")[-1])):
+            sum1 += data[i]
+            data1.append(round(float(sum1), 1))
+        return data1
+
+    def cumulative_previous_year(data):
+        """ 计算梯度月累计列表 """
+        data1 = []
+        sum1 = 0
+        for i in range(0, 12):
+            sum1 += data[i]
+            data1.append(round(float(sum1), 1))
+        return data1
+
     # 计算梯度月累计列表
-    cumulative_month_sales_volume = []
-    cumulative_month_sales_volume_target = []
-    sum1 = 0
-    for i in range(0, int(time.strftime("%m").split("0")[-1])):
-        sum1 += formatted_month_sales_volume[i]
-        cumulative_month_sales_volume.append(round(float(sum1), 1))
-    sum1 = 0
-    for i in range(0, int(time.strftime("%m").split("0")[-1])):
-        sum1 += formatted_month_sales_volume_target[i]
-        cumulative_month_sales_volume_target.append(round(float(sum1), 1))
+    cumulative_month_sales_volume = cumulative(formatted_month_sales_volume)
+    cumulative_month_sales_volume_target = cumulative(formatted_month_sales_volume_target)
+    cumulative_month_sales_volume_previous_year = cumulative_previous_year(formatted_month_sales_volume_previous_year)
 
     data_dict = {
         "status": True,
@@ -1013,27 +1101,41 @@ def chat_api1(request):
             "yAxis": {"left": "吨", "right": ""},
             "series": {
                 "a": {
-                    "name": "目标销售量",
-                    "data": formatted_month_sales_volume_target,
+                    "name": "同比上年销售量",
+                    "data": formatted_month_sales_volume_previous_year,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 吨',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
                 "b": {
+                    "name": "目标销售量",
+                    "data": formatted_month_sales_volume_target,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,
+                },
+                "c": {
                     "name": "实际销售量",
                     "data": formatted_month_sales_volume,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 吨',
                     "yAxis": 0,
                 },
-                "c": {
-                    "name": "月累计目标销售量",
-                    "data": cumulative_month_sales_volume_target,
+                "d": {
+                    "name": "月累计同比上年销售量",
+                    "data": cumulative_month_sales_volume_previous_year,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 吨',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
-                "d": {
+                "e": {
+                    "name": "月累计目标销售量",
+                    "data": cumulative_month_sales_volume_target,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,
+                },
+                "f": {
                     "name": "月累计实际销售量",
                     "data": cumulative_month_sales_volume,
                     "valuePrefix": ' ',
@@ -1047,19 +1149,32 @@ def chat_api1(request):
 
 
 def chat_api2(request):
-    formatted_sales = data_month_sales_revenue()
-    formatted_sales_target = data_month_sales_revenue_target()
+    formatted_month_sales_revenue = data_month_sales_revenue()
+    formatted_month_sales_revenue_target = data_month_sales_revenue_target()
+    formatted_month_sales_revenue_previous_year = data_month_sales_revenue_previous_year()
+
+    def cumulative(data):
+        """ 计算梯度月累计列表 """
+        data1 = []
+        sum1 = 0
+        for i in range(0, int(time.strftime("%m").split("0")[-1])):
+            sum1 += data[i]
+            data1.append(round(float(sum1), 1))
+        return data1
+
+    def cumulative_previous_year(data):
+        """ 计算梯度月累计列表 """
+        data1 = []
+        sum1 = 0
+        for i in range(0, 12):
+            sum1 += data[i]
+            data1.append(round(float(sum1), 1))
+        return data1
+
     # 计算梯度月累计列表
-    cumulative_month_sales_revenue = []
-    cumulative_month_sales_revenue_target = []
-    sum1 = 0
-    for i in range(0, int(time.strftime("%m").split("0")[-1])):
-        sum1 += formatted_sales[i]
-        cumulative_month_sales_revenue.append(round(float(sum1), 1))
-    sum1 = 0
-    for i in range(0, int(time.strftime("%m").split("0")[-1])):
-        sum1 += formatted_sales_target[i]
-        cumulative_month_sales_revenue_target.append(round(float(sum1), 1))
+    cumulative_month_sales_revenue = cumulative(formatted_month_sales_revenue)
+    cumulative_month_sales_revenue_target = cumulative(formatted_month_sales_revenue_target)
+    cumulative_month_sales_revenue_previous_year = cumulative_previous_year(formatted_month_sales_revenue_previous_year)
 
     data_dict = {
         "status": True,
@@ -1069,28 +1184,42 @@ def chat_api2(request):
             "yAxis": {"left": "万元", "right": ""},
             "series": {
                 "a": {
-                    "name": "目标销售额",
-                    "data": formatted_sales_target,
+                    "name": "同比上年销售额",
+                    "data": formatted_month_sales_revenue_previous_year,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 万元',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
                 "b": {
-                    "name": "实际销售额",
-                    "data": formatted_sales,
+                    "name": "目标销售额",
+                    "data": formatted_month_sales_revenue_target,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 万元',
                     "yAxis": 0,
                 },
                 "c": {
-                    "name": "月累计目标销售额",
-                    "data": cumulative_month_sales_revenue_target,
+                    "name": "实际销售额",
+                    "data": formatted_month_sales_revenue,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 万元',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
                 "d": {
-                    "name": "月累计实际销售额",
+                    "name": "月累计同比上年销售额",
+                    "data": cumulative_month_sales_revenue_previous_year,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
+                    "yAxis": 0,
+                },
+                "e": {
+                    "name": "月累计目标销售量",
+                    "data": cumulative_month_sales_revenue_target,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
+                    "yAxis": 0,
+                },
+                "f": {
+                    "name": "月累计实际销售量",
                     "data": cumulative_month_sales_revenue,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 万元',
@@ -1329,5 +1458,33 @@ def api_year_new_client_company(request):
     data_dict = {
         "status": True,
         "data": data_num
+    }
+    return JsonResponse(data_dict)
+
+
+def api_SalesIndicator_team_sales_volume_sanking(request):
+    data_num = data_SalesIndicator_team_sales_volume_sanking()
+    # [{'salesperson': '冯丹龙', 'sales_volume__sum': 677573}, {'salesperson': '李爱', 'sales_volume__sum': 246375}]
+    salesperson = []
+    sales_volume__sum = []
+    for obj in data_num:
+        salesperson.append(obj["salesperson"])
+        sales_volume__sum.append(obj["sales_volume__sum"])
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "每月销售额",
+            "xAxis": salesperson,
+            "yAxis": {"left": "万元", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务员销售量",
+                    "data": sales_volume__sum,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
     }
     return JsonResponse(data_dict)

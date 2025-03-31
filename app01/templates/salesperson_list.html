@@ -40,8 +40,8 @@
                     {% for obj in queryset %}
                         <tr uid="{{ obj.id }}">
                             <th>{{ obj.id }}</th>
-                            <td>{{ obj.team }}</td>
-                            <td>{{ obj.get_status_display }}</td>
+                            <th>{{ obj.team }}</th>
+                            <th>{{ obj.get_status_display }}</th>
                             <td>{{ obj.name }}</td>
                             <td>
                                 <input uid="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-edit" value="编辑">

@@ -121,6 +121,8 @@ urlpatterns = [
     path('chart/api/api_year_sales_revenue', chart.api_year_sales_revenue),
     path('chart/api/api_year_sales_revenue_target', chart.api_year_sales_revenue_target),
     path('chart/api/api_year_new_client_company', chart.api_year_new_client_company),
+    # 业务员指标达成
+    path('chart/api/api_SalesIndicator_team_sales_volume_sanking', chart.api_SalesIndicator_team_sales_volume_sanking),
 
     # 上传文件
     path('upload/list', upload.upload_list),
