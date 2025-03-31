@@ -122,7 +122,10 @@ urlpatterns = [
     path('chart/api/api_year_sales_revenue_target', chart.api_year_sales_revenue_target),
     path('chart/api/api_year_new_client_company', chart.api_year_new_client_company),
     # 业务员指标达成
+    path('chart/api/api_SalesIndicator_sales_volume_sanking', chart.api_SalesIndicator_sales_volume_sanking),
     path('chart/api/api_SalesIndicator_team_sales_volume_sanking', chart.api_SalesIndicator_team_sales_volume_sanking),
+    path('chart/api/api_SalesIndicator_sales_revenue_sanking', chart.api_SalesIndicator_sales_revenue_sanking),
+    path('chart/api/api_SalesIndicator_team_sales_revenue_sanking', chart.api_SalesIndicator_team_sales_revenue_sanking),
 
     # 上传文件
     path('upload/list', upload.upload_list),

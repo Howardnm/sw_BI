@@ -225,7 +225,8 @@ def data_month_sales_revenue():
     # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
     dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
     # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
-    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
+    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in
+                       range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
     # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     return formatted_sales
 
@@ -289,7 +290,8 @@ def data_month_sales_revenue_previous_year():
     # <QuerySet [{'month': datetime.date(2025, 1, 1), 'revenue__sum': Decimal('100570.00000000000000')}, {'month': datetime.date(2025, 2, 1), 'revenue__sum': Decimal('102960.00000000000000')}, {'month': datetime.date(2025, 3, 1), 'revenue__sum': Decimal('5480.50000000000000')}]>
     dict1 = {item["month"].month: item["revenue__sum"] for item in queryset}
     # {1: Decimal('100570.00000000000000'), 2: Decimal('102960.00000000000000'), 3: Decimal('5480.50000000000000')}
-    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
+    formatted_sales = [round(float(dict1.get(month, 0) / 10000), 2) for month in
+                       range(1, 13)]  # 元变万元，round(num, 2) 把小数限制到2位
     # [100570.0, 102960.0, 5480.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     return formatted_sales
 
@@ -392,7 +394,8 @@ def data_supply_company_raw_material_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(
         actual_client_company=OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
         k3=OuterRef("k3")  # 让子查询匹配主查询的 k3
-    ).values("product_domain_groups")[:1]  # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
+    ).values("product_domain_groups")[
+                             :1]  # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
     queryset: list = (
@@ -435,7 +438,8 @@ def data_supply_company_raw_material_sales_revenue():
     sales_product_subquery = models.SalesProduct.objects.filter(
         actual_client_company=OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
         k3=OuterRef("k3")  # 让子查询匹配主查询的 k3
-    ).values("product_domain_groups")[:1]  # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
+    ).values("product_domain_groups")[
+                             :1]  # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     queryset: list = (
         models.SalesData.objects
@@ -483,7 +487,8 @@ def data_supply_company_intra_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -533,7 +538,8 @@ def data_supply_company_intra_sales_revenue():
     # 子查询：获取产品领域组别
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     queryset: list = (
         models.SalesData.objects
         .filter(date__year=time.strftime("%Y"))
@@ -581,7 +587,8 @@ def data_supply_company_external_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -631,7 +638,8 @@ def data_supply_company_external_sales_revenue():
     # 子查询：获取产品领域组别
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     queryset: list = (
         models.SalesData.objects
         .filter(date__year=time.strftime("%Y"))
@@ -678,7 +686,8 @@ def data_product_domain_groups_intra_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -731,7 +740,8 @@ def data_product_domain_groups_external_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_domain_groups")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -784,7 +794,8 @@ def data_product_category_intra_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_category")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -837,7 +848,8 @@ def data_product_category_external_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("product_category")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -890,7 +902,8 @@ def data_core_product_intra_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("core_product")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -943,7 +956,8 @@ def data_core_product_external_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("core_product")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -996,7 +1010,8 @@ def data_actual_client_company_intra_sales():
     sales_product_subquery = models.SalesProduct.objects.filter(**filter_args).values("actual_client_company")[:1]
     # 取匹配到的第一个 组别（家电、原料销售），只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
     # 子查询：获取内外销标识
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     # 取匹配到的第一个 内外销，只取第一条数据，但仍是 QuerySet。不能用.first() 因为这是提前执行查询，数据已取出，Django 不能嵌套进 SQL。
 
     # 生成：每个月每基地原料的出货量
@@ -1039,14 +1054,15 @@ def data_actual_client_company_intra_sales():
     return result
 
 
-def data_SalesIndicator_team_sales_volume_sanking():
+def data_SalesIndicator_sales_volume_sanking():
     # 公共的过滤条件，避免重复代码
     filter_args = {
         "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
         "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
     }
     # 子查询：获取产品领域组别
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
     queryset: list = (
         models.SalesData.objects
@@ -1062,7 +1078,114 @@ def data_SalesIndicator_team_sales_volume_sanking():
         )
         .order_by("-sales_volume__sum")
     )
-    return queryset
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["salesperson"]] = round(float(obj["sales_volume__sum"] / 1000), 1)
+    return dict1
+
+
+def data_SalesIndicator_team_sales_volume_sanking():
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
+    team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
+
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),  # 获取销售员
+            team=Subquery(team_subquery),  # 获取团队 ID
+            team_name=Subquery(team_name_subquery),  # 获取团队名称
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("team_name")  # 只显示month, k3字段
+        .annotate(
+            sales_volume__sum=Sum("sales_volume"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-sales_volume__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["team_name"]] = round(float(obj["sales_volume__sum"] / 1000), 1)
+    return dict1
+
+
+def data_SalesIndicator_sales_revenue_sanking():
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("salesperson")  # 只显示month, k3字段
+        .annotate(
+            revenue__sum=Sum("revenue"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-revenue__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["salesperson"]] = round(float(obj["revenue__sum"] / 10000), 1)
+    return dict1
+
+
+def data_SalesIndicator_team_sales_revenue_sanking():
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
+    team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
+
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),  # 获取销售员
+            team=Subquery(team_subquery),  # 获取团队 ID
+            team_name=Subquery(team_name_subquery),  # 获取团队名称
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("team_name")  # 只显示month, k3字段
+        .annotate(
+            revenue__sum=Sum("revenue"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-revenue__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["team_name"]] = round(float(obj["revenue__sum"] / 10000), 1)
+    return dict1
 
 
 def chat_api1(request):
@@ -1462,26 +1585,107 @@ def api_year_new_client_company(request):
     return JsonResponse(data_dict)
 
 
-def api_SalesIndicator_team_sales_volume_sanking(request):
-    data_num = data_SalesIndicator_team_sales_volume_sanking()
-    # [{'salesperson': '冯丹龙', 'sales_volume__sum': 677573}, {'salesperson': '李爱', 'sales_volume__sum': 246375}]
-    salesperson = []
-    sales_volume__sum = []
-    for obj in data_num:
-        salesperson.append(obj["salesperson"])
-        sales_volume__sum.append(obj["sales_volume__sum"])
+def api_SalesIndicator_sales_volume_sanking(request):
+    data_num = data_SalesIndicator_sales_volume_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+
     data_dict = {
         "status": True,
         "data": {
-            "title": "每月销售额",
-            "xAxis": salesperson,
-            "yAxis": {"left": "万元", "right": ""},
+            "title": "累计业务销售量排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "吨", "right": ""},
             "series": {
                 "a": {
                     "name": "业务员销售量",
-                    "data": sales_volume__sum,
+                    "data": data,
                     "valuePrefix": ' ',
                     "valueSuffix": ' 吨',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_SalesIndicator_team_sales_volume_sanking(request):
+    data_num = data_SalesIndicator_team_sales_volume_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "累计业务销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "吨", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务团队销售量",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_SalesIndicator_sales_revenue_sanking(request):
+    data_num = data_SalesIndicator_sales_revenue_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "累计业务销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "万元", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务员销售额",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_SalesIndicator_team_sales_revenue_sanking(request):
+    data_num = data_SalesIndicator_team_sales_revenue_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "累计团队销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "万元", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务团队销售额",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
                     "yAxis": 0,  # 0为左轴，1为右轴
                 },
             },

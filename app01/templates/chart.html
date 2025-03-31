@@ -96,6 +96,39 @@
                 </p>
             </figure>
         </div>
+
+        <!-- 业务员销售量排名 -->
+        <div class="col-md-3">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking1"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务团队销售量排名 -->
+        <div class="col-md-3">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking2"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务员销售额排名 -->
+        <div class="col-md-3">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking3"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务团队销售额排名 -->
+        <div class="col-md-3">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking4"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
         <!-- 三基地每月销售量（吨） -->
         <div class="col-md-6">
             <figure class="highcharts-figure">
@@ -215,6 +248,12 @@
         ajax_post("/chart/api/12", chart_column_volume, "chat12");
 
         ajax_post("/chart/api_1/1", chart_column_revenue, "chat_revenue1");
+
+        ajax_post("/chart/api/api_SalesIndicator_sales_volume_sanking", chart_column1, "chat_sanking1");
+        ajax_post("/chart/api/api_SalesIndicator_team_sales_volume_sanking", chart_column1, "chat_sanking2");
+        ajax_post("/chart/api/api_SalesIndicator_sales_revenue_sanking", chart_column1, "chat_sanking3");
+        ajax_post("/chart/api/api_SalesIndicator_team_sales_revenue_sanking", chart_column1, "chat_sanking4");
+
     });
 
     function ajax_post(url, callback, idx) {
@@ -341,7 +380,7 @@
         });
     }
 
-    function salesindicator_sales_sanking(res, idx) {
+    function chart_column1(res, idx) {
         Highcharts.chart(idx, {
             chart: {
                 type: 'column'
@@ -356,7 +395,7 @@
                 {min: 0, title: {text: res.data.yAxis.left}},
                 {title: {text: res.data.yAxis.right}, opposite: true}
             ],
-            legend: {shadow: false, reversed: true},
+            legend: {shadow: false},
             tooltip: {shared: true},
             plotOptions: {
                 column: {grouping: false, shadow: false, borderWidth: 0}
@@ -365,19 +404,17 @@
                 {
                     name: res.data.series.a.name,
                     type: 'column',
-                    color: 'rgba(249, 237, 105,.9)',
                     data: res.data.series.a.data,
-                    // dataLabels: {enabled: true},
+                    dataLabels: {enabled: true},
                     tooltip: {
                         valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
                         valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
                     },
-                    pointPadding: 0.05, // 柱子宽度
-                    pointPlacement: 0, // 左右偏移量
                     yAxis: res.data.series.a.yAxis
                 },
             ]
         });
+
     }
 
     function chart_column_volume(res, idx) {
