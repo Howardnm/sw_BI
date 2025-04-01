@@ -1092,7 +1092,8 @@ def data_SalesIndicator_team_sales_volume_sanking():
         "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
     }
     # 子查询：获取产品领域组别
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
     team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
     team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
@@ -1159,7 +1160,8 @@ def data_SalesIndicator_team_sales_revenue_sanking():
         "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
     }
     # 子查询：获取产品领域组别
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
     team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
     team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
@@ -1230,7 +1232,8 @@ def data_this_month_SalesIndicator_team_sales_volume_sanking():
         "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
     }
     # 子查询：获取产品领域组别
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
     team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
     team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
@@ -1301,7 +1304,8 @@ def data_this_month_SalesIndicator_team_sales_revenue_sanking():
         "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
     }
     # 子查询：获取产品领域组别
-    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
     salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
     team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
     team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
@@ -1822,6 +1826,115 @@ def api_SalesIndicator_team_sales_revenue_sanking(request):
         "status": True,
         "data": {
             "title": "累计团队销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "万元", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务团队销售额",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_this_month_SalesIndicator_sales_volume_sanking(request):
+    data_num = data_this_month_SalesIndicator_sales_volume_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "本月业务销售量排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "吨", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务员销售量",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_this_month_SalesIndicator_team_sales_volume_sanking(request):
+    data_num = data_this_month_SalesIndicator_team_sales_volume_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "本月业务销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "吨", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务团队销售量",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 吨',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_this_month_SalesIndicator_sales_revenue_sanking(request):
+    data_num = data_this_month_SalesIndicator_sales_revenue_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "本月业务销售额排名",
+            "xAxis": xAxis,
+            "yAxis": {"left": "万元", "right": ""},
+            "series": {
+                "a": {
+                    "name": "业务员销售额",
+                    "data": data,
+                    "valuePrefix": ' ',
+                    "valueSuffix": ' 万元',
+                    "yAxis": 0,  # 0为左轴，1为右轴
+                },
+            },
+        }
+    }
+    return JsonResponse(data_dict)
+
+
+def api_this_month_SalesIndicator_team_sales_revenue_sanking(request):
+    data_num = data_this_month_SalesIndicator_team_sales_revenue_sanking()
+    xAxis = []
+    data = []
+    for key, value in data_num.items():
+        xAxis.append(key)
+        data.append(value)
+    data_dict = {
+        "status": True,
+        "data": {
+            "title": "本月团队销售额排名",
             "xAxis": xAxis,
             "yAxis": {"left": "万元", "right": ""},
             "series": {
