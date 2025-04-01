@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from dateutil.relativedelta import relativedelta
+from django.utils.timezone import now
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Count, OuterRef, Subquery, Q, Max, Min
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, HttpResponse, redirect
@@ -1165,6 +1167,148 @@ def data_SalesIndicator_team_sales_revenue_sanking():
     queryset: list = (
         models.SalesData.objects
         .filter(date__year=time.strftime("%Y"))
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),  # 获取销售员
+            team=Subquery(team_subquery),  # 获取团队 ID
+            team_name=Subquery(team_name_subquery),  # 获取团队名称
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("team_name")  # 只显示month, k3字段
+        .annotate(
+            revenue__sum=Sum("revenue"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-revenue__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["team_name"]] = round(float(obj["revenue__sum"] / 10000), 1)
+    return dict1
+
+
+def data_this_month_SalesIndicator_sales_volume_sanking():
+    current_date = now()  # 当前时间
+    last_month = current_date - relativedelta(months=1)  # 计算上个月
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=current_date.year, date__month=current_date.month)
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("salesperson")  # 只显示month, k3字段
+        .annotate(
+            sales_volume__sum=Sum("sales_volume"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-sales_volume__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["salesperson"]] = round(float(obj["sales_volume__sum"] / 1000), 1)
+    return dict1
+
+
+def data_this_month_SalesIndicator_team_sales_volume_sanking():
+    current_date = now()  # 当前时间
+    last_month = current_date - relativedelta(months=1)  # 计算上个月
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
+    team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
+
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=current_date.year, date__month=current_date.month)
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),  # 获取销售员
+            team=Subquery(team_subquery),  # 获取团队 ID
+            team_name=Subquery(team_name_subquery),  # 获取团队名称
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("team_name")  # 只显示month, k3字段
+        .annotate(
+            sales_volume__sum=Sum("sales_volume"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-sales_volume__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["team_name"]] = round(float(obj["sales_volume__sum"] / 1000), 1)
+    return dict1
+
+
+def data_this_month_SalesIndicator_sales_revenue_sanking():
+    current_date = now()  # 当前时间
+    last_month = current_date - relativedelta(months=1)  # 计算上个月
+    # 公共的过滤条件，避免重复代码
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values(
+        "intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=current_date.year, date__month=current_date.month)
+        .annotate(
+            intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
+            salesperson=Subquery(salesperson_subquery),
+            revenue=ExpressionWrapper(
+                F("sales_volume") * F("net_unit_price"),
+                output_field=DecimalField()
+            )
+        )
+        .filter(intra_or_external_sales="外销")  # .filter(~Q(...))，反选，排除原料销售的数据
+        .values("salesperson")  # 只显示month, k3字段
+        .annotate(
+            revenue__sum=Sum("revenue"),  # 根据上一行处理后的字典列表，对于相同字典进行合并，并新增一个sales_volume__sum字段在字典中，并把计算好的值插入其中。
+        )
+        .order_by("-revenue__sum")
+    )
+    dict1 = {}
+    for obj in queryset:
+        dict1[obj["salesperson"]] = round(float(obj["revenue__sum"] / 10000), 1)
+    return dict1
+
+
+def data_this_month_SalesIndicator_team_sales_revenue_sanking():
+    current_date = now()  # 当前时间
+    last_month = current_date - relativedelta(months=1)  # 计算上个月
+    filter_args = {
+        "actual_client_company": OuterRef("client_company"),  # 让子查询匹配主查询的 实际购货单位
+        "k3": OuterRef("k3"),  # 让子查询匹配主查询的 k3
+    }
+    # 子查询：获取产品领域组别
+    intra_or_external_sales_subquery = models.SalesProduct.objects.filter(**filter_args).values("intra_or_external_sales")[:1]
+    salesperson_subquery = models.SalesProduct.objects.filter(**filter_args).values("salesperson")[:1]
+    team_subquery = models.Salesperson.objects.filter(name=OuterRef("salesperson")).values("team")[:1]
+    team_name_subquery = models.SalesTeam.objects.filter(id=OuterRef("team")).values("name")[:1]
+
+    queryset: list = (
+        models.SalesData.objects
+        .filter(date__year=current_date.year, date__month=current_date.month)
         .annotate(
             intra_or_external_sales=Subquery(intra_or_external_sales_subquery),
             salesperson=Subquery(salesperson_subquery),  # 获取销售员
