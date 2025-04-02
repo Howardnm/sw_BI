@@ -96,77 +96,6 @@
                 </p>
             </figure>
         </div>
-
-        <!-- 业务员销售量排名 -->
-        <div class="col-md-3">
-            <figure class="highcharts-figure">
-                <div id="chat_sanking1"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 业务团队销售量排名 -->
-        <div class="col-md-3">
-            <figure class="highcharts-figure">
-                <div id="chat_sanking2"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 业务员销售额排名 -->
-        <div class="col-md-3">
-            <figure class="highcharts-figure">
-                <div id="chat_sanking3"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 业务团队销售额排名 -->
-        <div class="col-md-3">
-            <figure class="highcharts-figure">
-                <div id="chat_sanking4"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 三基地每月销售量（吨） -->
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat3"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 三基地每月销售额（万元） -->
-        <div class="col-md-6">
-            <figure class="highcharts-figure">
-                <div id="chat_revenue1"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <!-- 三基地每月原料销售量（吨） -->
-        <div class="col-md-4">
-            <figure class="highcharts-figure">
-                <div id="chat4"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-4">
-            <figure class="highcharts-figure">
-                <div id="chat5"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
-        <div class="col-md-4">
-            <figure class="highcharts-figure">
-                <div id="chat6"></div>
-                <p class="highcharts-description">
-                </p>
-            </figure>
-        </div>
         <!-- 【组别分类】外销-销售量  -->
         <div class="col-md-4">
             <figure class="highcharts-figure">
@@ -236,23 +165,13 @@
 
         ajax_post("/chart/api/1", chart_column, "chat1");
         ajax_post("/chart/api/2", chart_column, "chat2");
-        ajax_post("/chart/api/3", chart_column_volume, "chat3");
-        ajax_post("/chart/api/4", chart_column_volume, "chat4");
-        ajax_post("/chart/api/5", chart_column_volume, "chat5");
-        ajax_post("/chart/api/6", chart_column_volume, "chat6");
+
         ajax_post("/chart/api/7", chart_column_volume, "chat7");
         ajax_post("/chart/api/8", chart_column_volume, "chat8");
         ajax_post("/chart/api/9", chart_column_volume, "chat9");
         ajax_post("/chart/api/10", chart_column_volume, "chat10");
         ajax_post("/chart/api/11", chart_column_volume, "chat11");
         ajax_post("/chart/api/12", chart_column_volume, "chat12");
-
-        ajax_post("/chart/api_1/1", chart_column_revenue, "chat_revenue1");
-
-        ajax_post("/chart/api/api_SalesIndicator_sales_volume_sanking", chart_column1, "chat_sanking1");
-        ajax_post("/chart/api/api_SalesIndicator_team_sales_volume_sanking", chart_column1, "chat_sanking2");
-        ajax_post("/chart/api/api_SalesIndicator_sales_revenue_sanking", chart_column1, "chat_sanking3");
-        ajax_post("/chart/api/api_SalesIndicator_team_sales_revenue_sanking", chart_column1, "chat_sanking4");
 
     });
 

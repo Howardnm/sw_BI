@@ -32,7 +32,7 @@
 <body>
 <div class="container-fluid">
     <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list" role="button">返回系统</a>
-    <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} </h4>
+    <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} 客户每月销售量列表</h4>
     <!-- 业务员业绩排行 -->
     <div id="container" style="height: 800px"></div>
 </div>
@@ -79,18 +79,18 @@
             dataTable: {
                 columns: {
                     company: res.data.series[0],
-                    month_1: res.data.series[1],
-                    month_2: res.data.series[2],
-                    month_3: res.data.series[3],
-                    month_4: res.data.series[4],
-                    month_5: res.data.series[5],
-                    month_6: res.data.series[6],
-                    month_7: res.data.series[7],
-                    month_8: res.data.series[8],
-                    month_9: res.data.series[9],
-                    month_10: res.data.series[10],
-                    month_11: res.data.series[11],
-                    month_12: res.data.series[12],
+                    "1月": res.data.series[1],
+                    "2月": res.data.series[2],
+                    "3月": res.data.series[3],
+                    "4月": res.data.series[4],
+                    "5月": res.data.series[5],
+                    "6月": res.data.series[6],
+                    "7月": res.data.series[7],
+                    "8月": res.data.series[8],
+                    "9月": res.data.series[9],
+                    "10月": res.data.series[10],
+                    "11月": res.data.series[11],
+                    "12月": res.data.series[12],
                 },
             }
         });
