@@ -32,9 +32,9 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000").split(",")
 
-MY_SQL_HOST = os.environ.get("MY_SQL_HOST", "").split(",")
-MY_SQL_PORT = os.environ.get("MY_SQL_PORT", 3306).split(",")
-MY_SQL_PASSWORD = os.environ.get("MY_SQL_PASSWORD", "").split(",")
+MY_SQL_HOST = os.environ.get("MY_SQL_HOST", "localhost")
+MY_SQL_PORT = int(os.environ.get("MY_SQL_PORT", 3306))
+MY_SQL_PASSWORD = os.environ.get("MY_SQL_PASSWORD", "")
 
 # Application definition
 
