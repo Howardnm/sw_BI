@@ -32,6 +32,10 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000").split(",")
 
+MY_SQL_HOST = os.environ.get("MY_SQL_HOST", "").split(",")
+MY_SQL_PORT = os.environ.get("MY_SQL_PORT", 3306).split(",")
+MY_SQL_PASSWORD = os.environ.get("MY_SQL_PASSWORD", "").split(",")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -91,9 +95,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sw_bi',  # 数据库名字
         'USER': 'root',
-        'PASSWORD': 'hxc850996480',
-        'HOST': 'bueess.top',
-        'PORT': 3308,
+        'HOST': MY_SQL_HOST,
+        'PORT': MY_SQL_PORT,
+        'PASSWORD': MY_SQL_PASSWORD,
         # 'HOST': '192.168.123.226',
         # 'PORT': 3306,
         'CONN_MAX_AGE': 600,  # 设置数据库连接最大存活时间（秒）
