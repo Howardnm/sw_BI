@@ -37,8 +37,30 @@ def chart_list1(request):
     return render(request, "chart1.html", context)
 
 
-def chart_list2(request):
-    return render(request, "chart_supply_company.html")
+def chart_supply_company(request):
+    """ 数据统计页面 """
+    this_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    this_year = time.strftime("%Y")
+    this_month = time.strftime("%m").split("0")[-1]
+    context = {
+        "this_year": this_year,
+        "this_month": this_month,
+        "this_time": this_time,
+    }
+    return render(request, "chart_supply_company.html", context)
+
+
+def chart_salesindicator_sales_revenue(request):
+    """ 数据统计页面 """
+    this_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    this_year = time.strftime("%Y")
+    this_month = time.strftime("%m").split("0")[-1]
+    context = {
+        "this_year": this_year,
+        "this_month": this_month,
+        "this_time": this_time,
+    }
+    return render(request, "chart_salesindicator_sales_revenue.html", context)
 
 
 def data_year_sales_volume():

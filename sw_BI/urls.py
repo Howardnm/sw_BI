@@ -44,7 +44,7 @@ urlpatterns = [
 
     # app02
     # 首页
-    path('', salesteam.list),
+    path('', chart.chart_salesindicator_sales_revenue),
 
     # 登录
     path('login', account.login),
@@ -94,7 +94,8 @@ urlpatterns = [
     # 数据统计
     path('chart/list', chart.chart_list),
     path('chart/list1', chart.chart_list1),
-    path('chart/list2', chart.chart_list2),
+    path('chart/chart_supply_company', chart.chart_supply_company),
+    path('chart/chart_salesindicator_sales_revenue', chart.chart_salesindicator_sales_revenue),
 
     # api销售量
     path('chart/api/1', chart.chat_api1),
@@ -126,6 +127,10 @@ urlpatterns = [
     path('chart/api/api_SalesIndicator_team_sales_volume_sanking', chart.api_SalesIndicator_team_sales_volume_sanking),
     path('chart/api/api_SalesIndicator_sales_revenue_sanking', chart.api_SalesIndicator_sales_revenue_sanking),
     path('chart/api/api_SalesIndicator_team_sales_revenue_sanking', chart.api_SalesIndicator_team_sales_revenue_sanking),
+    path('chart/api/api_this_month_SalesIndicator_sales_volume_sanking', chart.api_this_month_SalesIndicator_sales_volume_sanking),
+    path('chart/api/api_this_month_SalesIndicator_team_sales_volume_sanking', chart.api_this_month_SalesIndicator_team_sales_volume_sanking),
+    path('chart/api/api_this_month_SalesIndicator_sales_revenue_sanking', chart.api_this_month_SalesIndicator_sales_revenue_sanking),
+    path('chart/api/api_this_month_SalesIndicator_team_sales_revenue_sanking', chart.api_this_month_SalesIndicator_team_sales_revenue_sanking),
 
     # 上传文件
     path('upload/list', upload.upload_list),

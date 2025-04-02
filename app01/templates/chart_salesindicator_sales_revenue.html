@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BI展板首页</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-5.3.3-dist/css/bootstrap.min.css' %}">
+
+    <style>
+        /* 自定义小卡片样式 */
+        .card-small .card-body {
+            padding: 5px;
+        }
+
+        .card-small .card-title {
+            font-size: 1.1rem;
+        }
+
+        .card-small .card-text {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <a class="btn btn-primary" style="position: absolute;float: left;font-size: 0.7rem" href="/salesdata/list"
+       role="button">返回系统</a>
+    <h4 class="text-center mb-2" style="margin-top: 10px">{{ this_year }} 销售业绩及数据</h4>
+    <!-- 数据总览 -->
+    <div class="row text-center">
+        <div class="col-sm-2">
+            <div class="card card-small bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">全年总销售量</h5>
+                    <p class="card-text" id="total-num-1">? 吨</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">全年总销售额</h5>
+                    <p class="card-text" id="total-num-2">? 万元</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">1-{{ this_month }}月累计销售量指标</h5>
+                    <p class="card-text" id="total-num-3">达成率：? %</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">1-{{ this_month }}月累计销售额指标</h5>
+                    <p class="card-text" id="total-num-4">达成率：? %</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-info bg-opacity-75 text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">{{ this_year }}年新客户</h5>
+                    <p class="card-text" id="total-num-5">?</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="card card-small bg-secondary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">退货率</h5>
+                    <p class="card-text" id="total-num-6">? %</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 业务员业绩排行 -->
+    <div class="row mt-4">
+
+        <!-- 业务员销售量排名 -->
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking1"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务团队销售量排名 -->
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking2"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务员销售量排名 -->
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking3"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+        <!-- 业务团队销售量排名 -->
+        <div class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="chat_sanking4"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+        </div>
+
+    </div>
+
+    <script src="{% static 'plugins/bootstrap-5.3.3-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'plugins/highcharts-12.1.2/code/highcharts.js' %}"></script>
+    <script src="{% static 'plugins/highcharts-12.1.2/code/modules/exporting.js' %}"></script>
+    <script src="{% static 'plugins/highcharts-12.1.2/code/modules/export-data.js' %}"></script>
+    <script>
+        // 当 HTML 文档完全加载并解析完成后（但不包括 CSS、图片等外部资源），浏览器会触发 DOMContentLoaded 事件，此时可以安全地操作 DOM 元素，而不必等到所有外部资源加载完成。
+        $(document).ready(function () {
+            ajax_post("/chart/api/api_year_sales_volume", num_year_sales_volume, "total-num-1");
+            ajax_post("/chart/api/api_year_sales_volume_target", num_year_sales_volume_target, "total-num-3");
+            ajax_post("/chart/api/api_year_sales_revenue", num_year_sales_revenue, "total-num-2");
+            ajax_post("/chart/api/api_year_sales_revenue_target", num_year_sales_revenue_target, "total-num-4");
+            ajax_post("/chart/api/api_year_new_client_company", num_new_client_company, "total-num-5");
+
+            ajax_post("/chart/api/api_SalesIndicator_sales_revenue_sanking", chart_column1, "chat_sanking1");
+            ajax_post("/chart/api/api_SalesIndicator_team_sales_revenue_sanking", chart_column1, "chat_sanking2");
+            ajax_post("/chart/api/api_this_month_SalesIndicator_sales_revenue_sanking", chart_column1, "chat_sanking3");
+            ajax_post("/chart/api/api_this_month_SalesIndicator_team_sales_revenue_sanking", chart_column1, "chat_sanking4");
+
+        });
+
+        function ajax_post(url, callback, idx) {
+            $.ajax({
+                url: url,
+                method: "GET",
+                dataType: "json",
+                success: function (res) {
+                    // console.log(res)
+                    callback(res, idx); // 确保数据加载完成后再执行 callback
+                },
+                error: function (xhr, status, error) {
+                    console.error("数据加载失败:", error);
+                }
+            });
+        }
+
+        function chart_column(res, idx) {
+            Highcharts.chart(idx, {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: res.data.title,
+                },
+                xAxis: {
+                    categories: res.data.xAxis,
+                },
+                yAxis: [
+                    {min: 0, title: {text: res.data.yAxis.left}},
+                    {title: {text: res.data.yAxis.right}, opposite: true}
+                ],
+                legend: {shadow: false},
+                tooltip: {shared: true},
+                plotOptions: {
+                    column: {grouping: false, shadow: false, borderWidth: 0}
+                },
+                series: [
+                    {
+                        name: res.data.series.a.name,
+                        type: 'column',
+                        color: 'rgba(249, 237, 105,.9)',
+                        data: res.data.series.a.data,
+                        // dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
+                            valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
+                        },
+                        pointPadding: 0.05, // 柱子宽度
+                        pointPlacement: 0, // 左右偏移量
+                        yAxis: res.data.series.a.yAxis
+                    },
+                    {
+                        name: res.data.series.b.name,
+                        type: 'column',
+                        color: 'rgba(255,132,31,0.9)',
+                        data: res.data.series.b.data,
+                        dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.b.valuePrefix,
+                            valueSuffix: res.data.series.b.valueSuffix,
+                        },
+                        pointPadding: 0.2,
+                        pointPlacement: 0,
+                        yAxis: res.data.series.b.yAxis
+                    },
+                    {
+                        name: res.data.series.c.name,
+                        type: 'column',
+                        color: 'rgba(186,60,61,.9)',
+                        data: res.data.series.c.data,
+                        dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.c.valuePrefix,
+                            valueSuffix: res.data.series.c.valueSuffix,
+                        },
+                        pointPadding: 0.32,
+                        pointPlacement: 0,
+                        yAxis: res.data.series.c.yAxis
+                    },
+                    {
+                        name: res.data.series.d.name,
+                        type: 'spline',
+                        color: 'rgb(171,0,213,1)',
+                        data: res.data.series.d.data,
+                        dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.d.valuePrefix,
+                            valueSuffix: res.data.series.d.valueSuffix,
+                        },
+                        pointPadding: 0.3,
+                        pointPlacement: 0,
+                        yAxis: res.data.series.d.yAxis
+                    },
+                    {
+                        name: res.data.series.e.name,
+                        type: 'spline',
+                        color: 'rgb(10,176,0,1)',
+                        data: res.data.series.e.data,
+                        // dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.e.valuePrefix,
+                            valueSuffix: res.data.series.e.valueSuffix,
+                        },
+                        pointPadding: 0.3,
+                        pointPlacement: 0,
+                        yAxis: res.data.series.e.yAxis
+                    },
+                    {
+                        name: res.data.series.f.name,
+                        type: 'spline',
+                        color: 'rgba(44, 175, 254,1)',
+                        data: res.data.series.f.data,
+                        dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.f.valuePrefix,
+                            valueSuffix: res.data.series.f.valueSuffix,
+                        },
+                        pointPadding: 0.3,
+                        pointPlacement: 0,
+                        yAxis: res.data.series.f.yAxis
+                    },
+                ]
+            });
+        }
+
+        function chart_column1(res, idx) {
+            Highcharts.chart(idx, {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: res.data.title,
+                },
+                xAxis: {
+                    categories: res.data.xAxis,
+                },
+                yAxis: [
+                    {min: 0, title: {text: res.data.yAxis.left}},
+                    {title: {text: res.data.yAxis.right}, opposite: true}
+                ],
+                legend: {shadow: false},
+                tooltip: {shared: true},
+                plotOptions: {
+                    column: {grouping: false, shadow: false, borderWidth: 0}
+                },
+                series: [
+                    {
+                        name: res.data.series.a.name,
+                        type: 'column',
+                        data: res.data.series.a.data,
+                        dataLabels: {enabled: true},
+                        tooltip: {
+                            valuePrefix: res.data.series.a.valuePrefix, // 数据前置字符串
+                            valueSuffix: res.data.series.a.valueSuffix, // 数据后置字符串
+                        },
+                        yAxis: res.data.series.a.yAxis
+                    },
+                ]
+            });
+
+        }
+
+        function chart_column_volume(res, idx) {
+            Highcharts.chart(idx, {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: res.data.title,
+                },
+                xAxis: {
+                    categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                },
+                yAxis: [
+                    {min: 0, title: {text: '吨'}, stackLabels: {enabled: true},},
+                ],
+                tooltip: {
+                    shared: true,
+                    valuePrefix: '', // 数据前置字符串
+                    valueSuffix: ' 吨', // 数据后置字符串
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: res.data.series
+            });
+        }
+
+        function chart_column_revenue(res, idx) {
+            Highcharts.chart(idx, {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: res.data.title,
+                },
+                xAxis: {
+                    categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '万元'
+                    },
+                    stackLabels: {
+                        enabled: true
+                    },
+                },
+                tooltip: {
+                    shared: true,
+                    valuePrefix: '', // 数据前置字符串
+                    valueSuffix: ' 万元', // 数据后置字符串
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: res.data.series
+            });
+        }
+
+        function num_year_sales_volume(res, idx) {
+            $("#" + idx).html(res.data + " 吨");
+        }
+
+        function num_year_sales_volume_target(res, idx) {
+            $("#" + idx).html("达成率：" + res.data + " %");
+        }
+
+        function num_year_sales_revenue(res, idx) {
+            $("#" + idx).html(res.data + " 万元");
+        }
+
+        function num_year_sales_revenue_target(res, idx) {
+            $("#" + idx).html("达成率：" + res.data + " %");
+        }
+
+        function num_new_client_company(res, idx) {
+            $("#" + idx).html(res.data);
+        }
+
+
+    </script>
+</body>
+</html>
